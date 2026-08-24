@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  basic-checks:
+    name: Basic checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Reject generated and new backup files tracked by Git
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          generated_files="$({
+            git ls-files \
+              | grep -E '(^|/)(__pycache__/|build/|install/|log/)|\.py[co]$'
+          } || true)"
+
+          if [[ -n "${generated_files}" ]]; then
+            echo "Generated files must not be committed:"
+            echo "${generated_files}"
+            exit 1
+          fi
+
+          # Grandfather the current snapshots until they are cleaned up separately.
+          unexpected_backup_files="$(
+            comm -13 \
+              <(printf '%s\n' \
+                'gui_control/gui_control/gui_control.py.ttk' \
+                'linker_hand_ros2_sdk/launch/test.bak' \
+                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/can/linker_hand_g20_can.py.bak' \
+                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/can/linker_hand_l6_can.py.bak' \
+                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/can/linker_hand_o6_can.py.bak' \
+                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/rs485/linker_hand_l6_rs485.py.bak' \
+                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/rs485/linker_hand_o6_rs485.py.bak' \
+                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/linker_hand_api.py.bak' \
+                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/linker_hand.py.bak' \
+                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/linker_hand_advanced_o6.py.bak' \
+                | sort) \
+              <(git ls-files '*.bak' '*.ttk' | sort)
+          )"
+
+          if [[ -n "${unexpected_backup_files}" ]]; then
+            echo "New *.bak and *.ttk files must not be committed:"
+            echo "${unexpected_backup_files}"
+            exit 1
+          fi
+
+      - name: Check unresolved merge markers
+        shell: bash
+        run: |
+          set -euo pipefail
+          conflict_markers="$(git grep -n -E '^(<<<<<<<|>>>>>>>)' -- . || true)"
+
+          if [[ -n "${conflict_markers}" ]]; then
+            echo "Unresolved merge markers found:"
+            echo "${conflict_markers}"
+            exit 1
+          fi
+
+      - name: Check Python syntax
+        shell: bash
+        env:
+          PYTHONPYCACHEPREFIX: /tmp/linkerhand-ci-pycache
+        run: |
+          set -euo pipefail
+          git ls-files -z '*.py' | xargs -0 -r python3 -m py_compile
+
+      - name: Check shell syntax
+        shell: bash
+        run: git ls-files -z '*.sh' | xargs -0 -r -n 1 bash -n
+
+      - name: Install check tools
+        run: >-
+          python3 -m pip install --disable-pip-version-check
+          ruff==0.12.11 PyYAML==6.0.2
+
+      - name: Check configuration syntax
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import tomllib
+          import xml.etree.ElementTree as ET
+
+          import yaml
+
+
+          def tracked_files(*patterns: str) -> list[Path]:
+              output = subprocess.check_output(
+                  ["git", "ls-files", "-z", *patterns]
+              ).decode()
+              return [Path(name) for name in output.split("\0") if name]
+
+
+          for path in tracked_files("*.yaml", "*.yml"):
+              with path.open(encoding="utf-8") as stream:
+                  list(yaml.safe_load_all(stream))
+
+          for path in tracked_files("*.toml"):
+              with path.open("rb") as stream:
+                  tomllib.load(stream)
+
+          for path in tracked_files("*.xml"):
+              ET.parse(path)
+          PY
+
+      - name: Check critical Python errors
+        run: ruff check --select E9,F63,F7,F82 .
