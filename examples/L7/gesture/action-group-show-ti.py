@@ -3,18 +3,15 @@
 
  
 
-import rclpy
-from rclpy.node import Node
-
-from std_msgs.msg import String,Header
-from sensor_msgs.msg import JointState
-import std_msgs.msg
-from builtin_interfaces.msg import Time
-
-import threading
-import time
 import signal
 import sys
+import time
+
+import rclpy
+from builtin_interfaces.msg import Time
+from rclpy.node import Node
+from sensor_msgs.msg import JointState
+from std_msgs.msg import Header
 
 show_count=0
 show_count_obj=0

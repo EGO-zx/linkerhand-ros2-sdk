@@ -1,23 +1,43 @@
+import json
 import sys
-import time, json
 import threading
-from dataclasses import dataclass
-from typing import List, Dict
-import rclpy
-from rclpy.node import Node
-from std_msgs.msg import String, Header
-from sensor_msgs.msg import JointState
-from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QObject, QEvent
-from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, 
-    QSlider, QLabel, QPushButton, QGroupBox, QScrollArea, QTabWidget, 
-    QFrame, QSplitter, QMessageBox, QTextEdit
-)
-from PyQt5.QtGui import QFont
+import time
+from typing import List
 
-from .utils.mapping import *
+import rclpy
+from PyQt5.QtCore import QObject, Qt, QTimer, pyqtSignal
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import (
+    QApplication,
+    QFrame,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QScrollArea,
+    QSlider,
+    QSplitter,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+from rclpy.node import Node
+from sensor_msgs.msg import JointState
+from std_msgs.msg import Header, String
 
 from .config.constants import _HAND_CONFIGS
+from .utils.mapping import (
+    range_to_arc_left,
+    range_to_arc_left_10,
+    range_to_arc_left_l20,
+    range_to_arc_right,
+    range_to_arc_right_10,
+    range_to_arc_right_l20,
+)
+
 LOOP_TIME = 1000 # 循环动作间隔时间 毫秒
 class ROS2NodeManager(QObject):
     """ROS2节点管理器，处理ROS通信"""
@@ -52,7 +72,7 @@ class ROS2NodeManager(QObject):
             self.hz = self.node.get_parameter('topic_hz').value
             self.is_arc = self.node.get_parameter('is_arc').value
             
-            if self.is_arc == True:
+            if self.is_arc:
                 # 创建发布者
                 self.publisher_arc = self.node.create_publisher(
                     JointState, f'/cb_{self.hand_type}_hand_control_cmd_arc', 10
@@ -63,9 +83,9 @@ class ROS2NodeManager(QObject):
             )
                     # 新增 speed / torque 发布者
             self.speed_pub = self.node.create_publisher(
-                String, f'/cb_hand_setting_cmd', 10)
+                String, '/cb_hand_setting_cmd', 10)
             self.torque_pub = self.node.create_publisher(
-                String, f'/cb_hand_setting_cmd', 10)
+                String, '/cb_hand_setting_cmd', 10)
             self.status_updated.emit("info", f"ROS2节点初始化成功: {self.hand_type} {self.hand_joint}")
             
             # 启动ROS2自旋线程
@@ -95,13 +115,13 @@ class ROS2NodeManager(QObject):
             #hand_config = HandConfig.from_hand_type(self.hand_joint)
             hand_config = _HAND_CONFIGS[self.hand_joint]
             if len(hand_config.joint_names) == len(positions):
-                if hand_config.joint_names_en != None:
+                if hand_config.joint_names_en is not None:
                     self.joint_state.name = hand_config.joint_names_en
                 else:
                     self.joint_state.name = hand_config.joint_names
                 
             self.publisher.publish(self.joint_state)
-            if self.is_arc == True:
+            if self.is_arc:
                 if self.hand_joint == "O6":
                     if self.hand_type == "left":
                         pose = range_to_arc_left(positions,self.hand_joint)
@@ -465,7 +485,7 @@ class HandControlGUI(QWidget):
         self.preset_buttons = []  # 清空按钮列表
         if self.hand_config.preset_actions:
             buttons = []
-            for idx, (name, positions) in enumerate(self.hand_config.preset_actions.items()):
+            for name, positions in self.hand_config.preset_actions.items():
                 button = QPushButton(name)
                 button.setProperty("category", "preset")
                 button.clicked.connect(

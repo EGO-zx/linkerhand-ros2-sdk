@@ -99,10 +99,13 @@ def range_to_arc_left(left_range,hand_joint):
     hand_arc = [0] * num
     for i in range(num):
         if hand_joint == "L20":
-            if 11 <= i <= 14: continue
+            if 11 <= i <= 14:
+                continue
         if hand_joint == "L21":
-            if 11 <= i <= 14: continue
-            if 16 <= i <= 19: continue
+            if 11 <= i <= 14:
+                continue
+            if 16 <= i <= 19:
+                continue
         val_l = is_within_range(left_range[i], 0, 255)
         if l_derict[i] == -1:
             hand_arc[i] = scale_value(val_l, 0, 255, l_max[i], l_min[i])
@@ -145,10 +148,13 @@ def range_to_arc_right(right_range,hand_joint):
     hand_arc = [0] * num
     for i in range(num):
         if hand_joint == "L20":
-            if 11 <= i <= 14: continue
+            if 11 <= i <= 14:
+                continue
         if hand_joint == "L21":
-            if 11 <= i <= 14: continue
-            if 16 <= i <= 19: continue
+            if 11 <= i <= 14:
+                continue
+            if 16 <= i <= 19:
+                continue
         val_r = is_within_range(right_range[i], 0, 255)
         if r_derict[i] == -1:
             hand_arc[i] = scale_value(val_r, 0, 255, r_max[i], r_min[i])
@@ -224,10 +230,13 @@ def arc_to_range_left(hand_arc_l,hand_joint):
     #hand_range_l = [0] * 7
     for i in range(num):
         if hand_joint == "L20":
-            if 11 <= i <= 14: continue
+            if 11 <= i <= 14:
+                continue
         if hand_joint == "L21":
-            if 11 <= i <= 14: continue
-            if 16 <= i <= 19: continue
+            if 11 <= i <= 14:
+                continue
+            if 16 <= i <= 19:
+                continue
         val_l = is_within_range(hand_arc_l[i], l_min[i], l_max[i])
         if l_derict[i] == -1:
             hand_range[i] = scale_value(val_l, l_min[i], l_max[i], 255, 0)
@@ -266,10 +275,13 @@ def arc_to_range_right(right_arc,hand_joint):
     hand_range = [0] * num
     for i in range(num):
         if hand_joint == "L20":
-            if 11 <= i <= 14: continue
+            if 11 <= i <= 14:
+                continue
         if hand_joint == "L21":
-            if 11 <= i <= 14: continue
-            if 16 <= i <= 19: continue
+            if 11 <= i <= 14:
+                continue
+            if 16 <= i <= 19:
+                continue
         val_r = is_within_range(right_arc[i], r_min[i], r_max[i])
         if r_derict[i] == -1:
             hand_range[i] = scale_value(val_r, r_min[i], r_max[i], 255, 0)
@@ -283,7 +295,8 @@ def arc_to_range_right(right_arc,hand_joint):
 def range_to_arc_right_l20(hand_range_r):
     hand_arc_r = [0] * 20
     for i in range(20):
-        if 11 <= i <= 14: continue
+        if 11 <= i <= 14:
+            continue
         val_r = is_within_range(hand_range_r[i], 0, 255)
         if l20_r_derict[i] == -1:
             hand_arc_r[i] = scale_value(val_r, 0, 255, l20_r_max[i], l20_r_min[i])
@@ -295,7 +308,8 @@ def range_to_arc_right_l20(hand_range_r):
 def range_to_arc_left_l20(hand_range_l):
     hand_arc_l = [0] * 20
     for i in range(20):
-        if 11 <= i <= 14: continue
+        if 11 <= i <= 14:
+            continue
         val_l = is_within_range(hand_range_l[i], 0, 255)
         if l20_l_derict[i] == -1:
             hand_arc_l[i] = scale_value(val_l, 0, 255, l20_l_max[i], l20_l_min[i])
@@ -307,7 +321,8 @@ def range_to_arc_left_l20(hand_range_l):
 def arc_to_range_right_l20(hand_arc_r):
     hand_range_r = [0] * 20
     for i in range(20):
-        if 11 <= i <= 14: continue
+        if 11 <= i <= 14:
+            continue
         val_r = is_within_range(hand_arc_r[i], l20_r_min[i], l20_r_max[i])
         if l20_r_derict[i] == -1:
             hand_range_r[i] = scale_value(val_r, l20_r_min[i], l20_r_max[i], 255, 0)
@@ -319,7 +334,8 @@ def arc_to_range_right_l20(hand_arc_r):
 def arc_to_range_left_l20(hand_arc_l):
     hand_range_l = [0] * 20
     for i in range(20):
-        if 11 <= i <= 14: continue
+        if 11 <= i <= 14:
+            continue
         val_l = is_within_range(hand_arc_l[i], l20_l_min[i], l20_l_max[i])
         if l20_l_derict[i] == -1:
             hand_range_l[i] = scale_value(val_l, l20_l_min[i], l20_l_max[i], 255, 0)

@@ -1,10 +1,12 @@
-import can
-import time, sys
+import sys
 import threading
+import time
+
+import can
 import numpy as np
-from utils.open_can import OpenCan
-from utils.color_msg import ColorMsg
 from can.exceptions import CanError
+from utils.color_msg import ColorMsg
+from utils.open_can import OpenCan
 
 
 class LinkerHandL6Can:
@@ -187,20 +189,24 @@ class LinkerHandL6Can:
         else:
             self.pressures = pressures[:6]
 
-    def set_torque(self, torque=[180] * 6):
+    def set_torque(self, torque=None):
         """Set L6 maximum torque limits."""
+        if torque is None:
+            torque = [180] * 6
         if len(torque) != 6:
             raise ValueError("Torque list must have 6 elements.")
             return
         self.send_frame(0x02, torque)
 
-    def set_speed(self, speed=[180] * 6):
+    def set_speed(self, speed=None):
         """Set L6 speed."""
+        if speed is None:
+            speed = [180] * 6
         if len(speed) != 6:
             raise ValueError("Speed list must have 6 elements.")
             return
         self.x05 = speed
-        for i in range(2):
+        for _ in range(2):
             time.sleep(0.001)
             self.send_frame(0x05, speed)
 
@@ -239,12 +245,11 @@ class LinkerHandL6Can:
         """Process received CAN messages."""
         #if msg.arbitration_id == self.can_id:
         if msg.arbitration_id in (self.can_id, self.can_id + 8):
-            try:
-                frame_type = msg.data[0]
-                response_data = msg.data[1:]
-                if len(list(response_data)) == 0:
-                    return
-            except:
+            if not msg.data:
+                return
+            frame_type = msg.data[0]
+            response_data = msg.data[1:]
+            if len(list(response_data)) == 0:
                 return
             if frame_type == 0x01:   # 0x01
                 self.x01 = list(response_data)
@@ -354,7 +359,7 @@ class LinkerHandL6Can:
         current_row = row
         current_col = col
         
-        for i, value in enumerate(data):
+        for value in data:
             # 检查当前列是否超出边界
             if current_col >= cols:
                 # 换到下一行
@@ -409,7 +414,7 @@ class LinkerHandL6Can:
         '''Get touch type'''
         self.send_frame(0xb1,[])
         t = []
-        for i in range(3):
+        for _ in range(3):
             t = self.xb1
             time.sleep(0.01)
         if len(t) == 2:
@@ -497,8 +502,10 @@ class LinkerHandL6Can:
     def show_fun_table(self):
         pass
     
-    def clear_faults(self, finger_mask=[1, 1, 1, 1, 1]):
+    def clear_faults(self, finger_mask=None):
         """O6 暂不支持清除故障码"""
+        if finger_mask is None:
+            finger_mask = [1, 1, 1, 1, 1]
         pass
 
     def get_serial_number(self):
@@ -515,7 +522,7 @@ class LinkerHandL6Can:
                 # print(f"原始 ASCII 码列表: {self.serial_number}")
                 # print(f"解码后的字符串: {result_string}")
                 return result_string
-        except:
+        except Exception:
             return "-1"
 
     def close_can_interface(self):

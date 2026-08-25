@@ -3,16 +3,16 @@
 O6 机械手 Modbus-RTU 控制类 (基于 pymodbus 3.5.1)
 """
 
-import os
-import time
-from typing import List, Dict, Any # 引入 Any 来表示灵活的输入类型
-import numpy as np
 import logging
-from threading import Lock # 用于线程安全和总线仲裁
+import time
+from struct import error as StructError
+from threading import Lock  # 用于线程安全和总线仲裁
+from typing import Any, List  # 引入 Any 来表示灵活的输入类型
+
+import numpy as np
 
 # 导入 pymodbus 客户端
 from pymodbus.client import ModbusSerialClient
-from struct import error as StructError 
 
 logging.basicConfig(
     level=logging.INFO,
@@ -498,8 +498,7 @@ class LinkerHandO6RS485:
         """
         rows = 10      # 10行
         cols = 4       # 4列
-        finger_size = rows * cols  # 40个数据点
-        
+
         # modbus 地址 (按O6协议文档)
         write_address = 18   # 写入手指选择 (保持寄存器)
         read_address = 47    # 读取压力数据 (输入寄存器)
@@ -578,8 +577,8 @@ class LinkerHandO6RS485:
         # 允许传入 float/numpy int 等可转换为 int 的类型
         try:
             pitch_int = int(pitch)
-        except (ValueError, TypeError):
-             raise ValueError("Pitch value must be a number convertible to int (0-255)")
+        except (ValueError, TypeError) as exc:
+            raise ValueError("Pitch value must be a number convertible to int (0-255)") from exc
 
         if not 0 <= pitch_int <= 255:
             raise ValueError("Pitch value must be 0-255")

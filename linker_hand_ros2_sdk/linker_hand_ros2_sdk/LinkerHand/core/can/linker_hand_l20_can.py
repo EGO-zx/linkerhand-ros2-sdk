@@ -1,12 +1,14 @@
 import sys
-import time
-import can
 import threading
+import time
 from enum import Enum
+
+import can
 import numpy as np
-from utils.open_can import OpenCan
-from utils.color_msg import ColorMsg
 from can.exceptions import CanError
+from utils.color_msg import ColorMsg
+from utils.open_can import OpenCan
+
 
 class FrameProperty(Enum):
     INVALID_FRAME_PROPERTY = 0x00  # Invalid CAN frame property | No return
@@ -210,7 +212,9 @@ class LinkerHandL20Can:
     def set_joint_speed(self, speed):
         self.x05 = speed
         self.send_command(0x05, speed)
-    def set_electric_current(self, e_c=[]):
+    def set_electric_current(self, e_c=None):
+        if e_c is None:
+            e_c = []
         self.send_command(0x06, e_c)
 
     def get_normal_force(self):
@@ -229,7 +233,9 @@ class LinkerHandL20Can:
 
 
 
-    def get_electric_current(self, e_c=[]):
+    def get_electric_current(self, e_c=None):
+        if e_c is None:
+            e_c = []
         self.send_command(0x06, e_c)
     
     def request_device_info(self):
@@ -346,16 +352,22 @@ class LinkerHandL20Can:
         self.set_finger_tip(finger_tip) # Fingertip movement
         self.set_finger_base(finger_base) # Finger base movement
         self.set_finger_middle(yaw_angles) # Yaw movement
-    def set_speed(self, speed=[]):
+    def set_speed(self, speed=None):
+        if speed is None:
+            speed = []
         if len(speed) != 5:
             raise ValueError("Speed list must have 5 elements.")
             return
         self.send_command(0x05,speed)
-    def set_torque(self, torque=[]):
+    def set_torque(self, torque=None):
         '''Set torque, not supported for L20'''
+        if torque is None:
+            torque = []
         print("Set torque, not supported for L20")
-    def set_current(self, current=[]):
+    def set_current(self, current=None):
         '''Set current'''
+        if current is None:
+            current = []
         self.set_electric_current(e_c=current)
     def get_version(self):
         '''Get version, currently not supported'''
@@ -404,8 +416,7 @@ class LinkerHandL20Can:
 
     def get_touch_type(self):
         '''Get touch type'''
-        t = []
-        for i in range(3):
+        for _ in range(3):
             self.send_command(0xb0,[],sleep=0.03)
         if self.xb0 == [2]:
             return 2

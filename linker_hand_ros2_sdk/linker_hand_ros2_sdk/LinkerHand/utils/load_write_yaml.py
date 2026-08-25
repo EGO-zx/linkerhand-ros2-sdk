@@ -9,7 +9,11 @@ FilePath: /LinkerHand_Python_SDK/LinkerHand/utils/load_write_yaml.py
 Description: 
 symbol_custom_string_obkorol_copyright: 
 '''
-import yaml, os, sys
+import os
+
+import yaml
+
+
 class LoadWriteYaml():
     def __init__(self):
         # 由于是API形式，这里要给配置文件目录绝对路径
@@ -84,11 +88,11 @@ class LoadWriteYaml():
                 yaml_data = yaml.safe_load(file)
                 print(yaml_data)
             if hand_type == "left":
-                if yaml_data["LEFT_HAND"] == None:
+                if yaml_data["LEFT_HAND"] is None:
                     yaml_data["LEFT_HAND"] = []
                 yaml_data["LEFT_HAND"].append({"ACTION_NAME": action_name, "POSITION": action_pos})
             elif hand_type == "right":
-                if yaml_data["RIGHT_HAND"] == None:
+                if yaml_data["RIGHT_HAND"] is None:
                     yaml_data["RIGHT_HAND"] = []
                 yaml_data["RIGHT_HAND"].append({"ACTION_NAME": action_name, "POSITION": action_pos})
             with open(action_path, 'w', encoding='utf-8') as file:
@@ -98,4 +102,3 @@ class LoadWriteYaml():
             a = False
             print(f"Error writing to yaml file: {e}")
         return a
-        

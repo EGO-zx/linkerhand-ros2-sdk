@@ -4,18 +4,20 @@
 编译: colcon build --symlink-install
 启动命令:ros2 run linker_hand_ros2_sdk linker_hand_sdk
 '''
-from re import A
-import rclpy,sys                                     # ROS2 Python接口库
+import json
+import sys  # ROS2 Python接口库
+import threading
 import time
+
 import numpy as np
-from rclpy.node import Node                      # ROS2 节点类
+import rclpy
 from rclpy.clock import Clock
-from std_msgs.msg import String, Header, Float32MultiArray
+from rclpy.node import Node  # ROS2 节点类
 from sensor_msgs.msg import JointState, PointCloud2, PointField
-import time, json, threading
+from std_msgs.msg import Float32MultiArray, Header, String
+
 from linker_hand_ros2_sdk.LinkerHand.linker_hand_api import LinkerHandApi
 from linker_hand_ros2_sdk.LinkerHand.utils.color_msg import ColorMsg
-from linker_hand_ros2_sdk.LinkerHand.utils.open_can import OpenCan
 
 
 class LinkerHand(Node):
@@ -102,7 +104,7 @@ class LinkerHand(Node):
         self.hand_cmd_sub = self.create_subscription(JointState, f'/cb_{self.hand_type}_hand_control_cmd', self.hand_control_cb,10)
         self.hand_state_pub = self.create_publisher(JointState, f'/cb_{self.hand_type}_hand_state',10)
         self.hand_info_pub = self.create_publisher(String, f'/cb_{self.hand_type}_hand_info', 10)
-        if self.is_touch == True:
+        if self.is_touch:
             if self.modbus != "None":
                 self.matrix_touch_pub = self.create_publisher(String, f'/cb_{self.hand_type}_hand_matrix_touch', 10)
                 #self.matrix_touch_pub_pc = self.create_publisher(PointCloud2, f'/cb_{self.hand_type}_hand_matrix_touch_pc', 10)
@@ -144,27 +146,26 @@ class LinkerHand(Node):
         elif self.hand_joint == "L25":
             pose = [75, 255, 255, 255, 255, 176, 97, 81, 114, 147, 202, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]
         if pose is not None:
-            for i in range(1): 
-                self.api.set_speed(speed=speed)
-                time.sleep(0.1)
-                self.api.set_torque(torque=torque)
-                time.sleep(0.1)
-                self.api.finger_move(pose=pose)
-                time.sleep(0.1)
+            self.api.set_speed(speed=speed)
+            time.sleep(0.1)
+            self.api.set_torque(torque=torque)
+            time.sleep(0.1)
+            self.api.finger_move(pose=pose)
+            time.sleep(0.1)
 
     def list_check(self,pose):
-        if isinstance(pose, list) == False:
+        if not isinstance(pose, list):
             return False
         if len(self.last_hand_post_cmd) != len(pose):
             return False
         return any(abs(self.last_hand_post_cmd - pose) >= 3 for self.last_hand_post_cmd, pose in zip(self.last_hand_post_cmd, pose))
 
     def hand_control_cb(self, msg):
-        if self.last_hand_post_cmd == None or self.list_check(msg.position) == True:
+        if self.last_hand_post_cmd is None or self.list_check(msg.position):
             self.last_hand_post_cmd = msg.position
-        if self.last_hand_vel_cmd == None or self.list_check(msg.velocity) == True:
+        if self.last_hand_vel_cmd is None or self.list_check(msg.velocity):
             self.last_hand_vel_cmd = msg.velocity
-        if self.last_hand_eff_cmd == None or self.list_check(msg.effort) == True:
+        if self.last_hand_eff_cmd is None or self.list_check(msg.effort):
             self.last_hand_eff_cmd = msg.effort
 
     def run(self):
@@ -176,11 +177,11 @@ class LinkerHand(Node):
             time.sleep(0.003)
             self.last_hand_vel = self.api.get_joint_speed()
             time.sleep(0.002)
-        if self.cmd_lock == False:
-            if self.last_hand_post_cmd != None:
+        if not self.cmd_lock:
+            if self.last_hand_post_cmd is not None:
                 self.api.finger_move(pose=self.last_hand_post_cmd)
                 self.last_hand_post_cmd = None
-            if self.last_hand_vel_cmd != None:
+            if self.last_hand_vel_cmd is not None:
                 vel = list(self.last_hand_vel_cmd)
                 if all(x == 0 for x in vel):
                     pass
@@ -205,10 +206,10 @@ class LinkerHand(Node):
                         self.api.set_joint_speed(speed=speed)
                 self.last_hand_vel_cmd = None
             time.sleep(0.003)
-            if self.run_count == 3 and self.is_touch == True and self.touch_type == 1 and self.modbus == "None" and self.touch_pub.get_subscription_count() > 0:
+            if self.run_count == 3 and self.is_touch and self.touch_type == 1 and self.modbus == "None" and self.touch_pub.get_subscription_count() > 0:
                 """单点式压力传感器"""
                 self.force = self.api.get_force()
-            if self.is_touch == True and (self.touch_type > 1 or self.modbus != "None") and (self.matrix_touch_pub.get_subscription_count() > 0 or self.matrix_touch_mass_pub.get_subscription_count() > 0):
+            if self.is_touch and (self.touch_type > 1 or self.modbus != "None") and (self.matrix_touch_pub.get_subscription_count() > 0 or self.matrix_touch_mass_pub.get_subscription_count() > 0):
                 """矩阵式压力传感器"""
                 if self.run_count == 3:
                     self.matrix_dic["thumb_matrix"] = self.api.get_thumb_matrix_touch(sleep_time=self.sleep_time).tolist()
@@ -251,11 +252,11 @@ class LinkerHand(Node):
             if self.hand_state_pub.get_subscription_count() > 0:
                 msg = self.joint_state_msg(self.last_hand_state, self.last_hand_vel)
                 self.hand_state_pub.publish(msg)
-            if self.is_touch == True and self.touch_type == 1 and self.modbus == "None" and self.touch_pub.get_subscription_count() > 0:
+            if self.is_touch and self.touch_type == 1 and self.modbus == "None" and self.touch_pub.get_subscription_count() > 0:
                 msg = Float32MultiArray()
                 msg.data = [float(val) for sublist in self.force for val in sublist]
                 self.touch_pub.publish(msg)
-            if self.is_touch == True and (self.touch_type > 1 or self.modbus != "None") and (self.matrix_touch_pub.get_subscription_count() > 0 or self.matrix_touch_mass_pub.get_subscription_count() > 0):
+            if self.is_touch and (self.touch_type > 1 or self.modbus != "None") and (self.matrix_touch_pub.get_subscription_count() > 0 or self.matrix_touch_mass_pub.get_subscription_count() > 0):
                 # 发布矩阵压感数据JSON格式
                 self.pub_matrix_dic()
                 # 发布矩阵压感和值JSON格式
@@ -328,7 +329,10 @@ class LinkerHand(Node):
         msg.data = json.dumps(self.matrix_dic)
         self.matrix_touch_pub.publish(msg)
 
-    def joint_state_msg(self, pose,vel=[]):
+    def joint_state_msg(self, pose,vel=None):
+        if vel is None:
+            vel = []
+
         joint_state = JointState()
         joint_state.header = Header()
         joint_state.header.stamp = self.get_clock().now().to_msg()
@@ -347,9 +351,11 @@ class LinkerHand(Node):
 
     def hand_setting_cb(self,msg):
         '''控制命令回调'''
-        data = json.loads(msg.data)
-        print(f"Received setting command: {data['setting_cmd']}",flush=True)
         try:
+            data = json.loads(msg.data)
+            print(f"Received setting command: {data['setting_cmd']}",flush=True)
+            hand_left = False
+            hand_right = False
             if data["params"]["hand_type"] == "left":
                 hand = self.api
                 hand_left = True
@@ -366,16 +372,16 @@ class LinkerHand(Node):
                 hand.set_torque(torque=torque)
                 
             if data["setting_cmd"] == "set_speed": # Set speed
-                if isinstance(data["params"]["speed"], list) == True:
+                if isinstance(data["params"]["speed"], list):
                     speed = data["params"]["speed"]
                     hand.set_speed(speed=speed)
                 else:
-                    ColorMsg(msg=f"Speed parameter error, speed must be a list", color="red")
+                    ColorMsg(msg="Speed parameter error, speed must be a list", color="red")
             if data["setting_cmd"] == "clear_faults": # Clear faults
-                if hand_left == True and self.hand_joint == "L10" :
-                    ColorMsg(msg=f"L10 left hand cannot clear faults")
-                elif hand_right == True and self.hand_joint == "L10" :
-                    ColorMsg(msg=f"L10 right hand cannot clear faults")
+                if hand_left and self.hand_joint == "L10" :
+                    ColorMsg(msg="L10 left hand cannot clear faults")
+                elif hand_right and self.hand_joint == "L10" :
+                    ColorMsg(msg="L10 right hand cannot clear faults")
                 else:
                     hand.clear_faults()
             if data["setting_cmd"] == "get_faults": # Get faults
@@ -384,11 +390,11 @@ class LinkerHand(Node):
             if data["setting_cmd"] == "electric_current": # Get current
                 ColorMsg(msg=f"Get current: {hand.get_current()}")
             if data["setting_cmd"] == "set_electric_current": # Set current
-                if isinstance(data["params"]["current"], list) == True:
+                if isinstance(data["params"]["current"], list):
                     hand.set_current(data["params"]["current"])
             if data["setting_cmd"] == "show_fun_table": # Get faults
                 f = hand.show_fun_table()
-        except:
+        except Exception:
             print("命令参数错误")
             self.cmd_lock = False
         finally:
@@ -406,16 +412,16 @@ def main(args=None):
         node = LinkerHand("linker_hand_sdk")
         embedded_version = node.embedded_version
         if len(embedded_version) == 3 or node.hand_joint.upper() == "O6" or node.hand_joint.upper() == "L6" or node.hand_joint.upper() == "G20":
-            ColorMsg(msg=f"New Matrix Touch For SDK V2", color="green")
+            ColorMsg(msg="New Matrix Touch For SDK V2", color="green")
             node.sdk_v = 2
         elif len(embedded_version) == 6 and node.hand_joint == "L10":
-            ColorMsg(msg=f"New Matrix Touch For SDK V2", color="green")
+            ColorMsg(msg="New Matrix Touch For SDK V2", color="green")
             node.sdk_v = 2
         elif len(embedded_version) > 4 and ((embedded_version[0]==10 and embedded_version[4]>35) or (embedded_version[0]==7 and embedded_version[4]>50) or (embedded_version[0] == 6)):
-            ColorMsg(msg=f"New Matrix Touch For SDK V2", color="green")
+            ColorMsg(msg="New Matrix Touch For SDK V2", color="green")
             node.sdk_v = 2
         else:
-            ColorMsg(msg=f"SDK V1", color="green")
+            ColorMsg(msg="SDK V1", color="green")
             node.sdk_v = 1
         rclpy.spin(node)         # 主循环，监听 ROS 回调
     except KeyboardInterrupt:

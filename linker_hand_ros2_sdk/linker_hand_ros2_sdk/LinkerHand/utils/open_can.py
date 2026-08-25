@@ -9,12 +9,13 @@ FilePath: /Linker_Hand_SDK_ROS/src/linker_hand_sdk_ros/scripts/LinkerHand/utils/
 Description: 
 symbol_custom_string_obkorol_copyright: 
 '''
-import sys,os,time,subprocess
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from color_msg import ColorMsg
-from load_write_yaml import LoadWriteYaml
-# from ament_index_python.packages import get_package_share_directory
 import os
+import subprocess
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# from ament_index_python.packages import get_package_share_directory
+from load_write_yaml import LoadWriteYaml
 
 
 class OpenCan:
@@ -42,9 +43,9 @@ class OpenCan:
                 capture_output=True
             )
             
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             pass
-        except Exception as e:
+        except Exception:
             pass
     def open_can(self,can="can0"):
         try:
@@ -65,9 +66,9 @@ class OpenCan:
                 text=True,
                 capture_output=True
             )
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             pass
-        except Exception as e:
+        except Exception:
             pass
             
 
@@ -113,7 +114,7 @@ class OpenCan:
         except Exception as e:
             print(f"Unexpected error: {e}")
             return False
-    
+
     def close_can(self,can="can0"):
         try:
             # 检查 can0 接口是否存在
@@ -142,4 +143,3 @@ class OpenCan:
         except Exception as e:
             print(f"Unexpected error: {e}")
             return False
-    

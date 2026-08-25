@@ -1,11 +1,20 @@
 #!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
-import sys, os, time,threading
+import os
+import sys
+import time
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from utils.mapping import *
 from utils.color_msg import ColorMsg
 from utils.load_write_yaml import LoadWriteYaml
+from utils.mapping import (
+    arc_to_range_left,
+    arc_to_range_right,
+    range_to_arc_left,
+    range_to_arc_right,
+)
 from utils.open_can import OpenCan
+
 
 class LinkerHandApi:
     def __init__(self, hand_type="left", hand_joint="L10", modbus = "None",can="can0"):  # Ubuntu:can0   win:PCAN_USBBUS1
@@ -14,6 +23,7 @@ class LinkerHandApi:
         self.config = self.yaml.load_setting_yaml()
         self.version = self.config["VERSION"]
         self.can = can
+        self.modbus = modbus
         ColorMsg(msg=f"Current SDK version: {self.version}", color="green")
         self.hand_joint = hand_joint
         self.hand_type = hand_type
@@ -79,7 +89,7 @@ class LinkerHandApi:
                 sys.exit(1)
         version = self.get_embedded_version()
         self.serial_number = self.get_serial_number()
-        if version == None or len(version) == 0:
+        if version is None or len(version) == 0:
             ColorMsg(msg="Warning: Hardware version number not recognized, it is recommended to terminate the program and re insert USB to CAN conversion", color="yellow")
         else:
             ColorMsg(msg=f"Embedded:{version}", color="green")
@@ -87,17 +97,19 @@ class LinkerHandApi:
         
     
     # Five-finger movement
-    def finger_move(self, pose=[]):
+    def finger_move(self, pose=None):
         '''
         Five-finger movement
         @params: pose list L7 len(7) | L10 len(10) | L20 len(20) | L25 len(25) 0~255
         '''
-        
+        if pose is None:
+            pose = []
+
         if len(pose) == 0:
             return
         pose = [int(v) for v in pose]
         if any(not isinstance(x, (int, float)) or x < 0 or x > 255 for x in pose):
-            ColorMsg(msg=f"The numerical range cannot be less than 0 or greater than 255",color="red")
+            ColorMsg(msg="The numerical range cannot be less than 0 or greater than 255",color="red")
             return
         if (self.hand_joint.upper() == "O6" or self.hand_joint.upper() == "L6") and len(pose) == 6:
             self.hand.set_joint_positions(pose)
@@ -134,8 +146,11 @@ class LinkerHandApi:
         self.hand.get_approach_inc()
     
 
-    def set_speed(self, speed=[100]*5):
+    def set_speed(self, speed=None):
         '''# Set speed'''
+        if speed is None:
+            speed = [100] * 5
+
         has_non_int = any(not isinstance(x, (int, float)) or x < 0 or x > 255 for x in speed)
         if has_non_int:
             print("Set Speed The numerical range can only be positive integers or floating-point numbers between 0 and 255", flush=True)
@@ -149,17 +164,23 @@ class LinkerHandApi:
         ColorMsg(msg=f"{self.hand_type} {self.hand_joint} set speed to {speed}", color="green")
         self.hand.set_speed(speed=speed)
     
-    def set_joint_speed(self, speed=[100]*5):
+    def set_joint_speed(self, speed=None):
         '''Set speed by topic'''
+        if speed is None:
+            speed = [100] * 5
+
         if len(speed) == 0:
             return
         if any(not isinstance(x, (int, float)) or x < 10 or x > 255 for x in speed):
-            ColorMsg(msg=f"The numerical range cannot be less than 10 or greater than 255",color="red")
+            ColorMsg(msg="The numerical range cannot be less than 10 or greater than 255",color="red")
             return
         self.hand.set_speed(speed=speed)
     
-    def set_torque(self, torque=[180] * 5):
+    def set_torque(self, torque=None):
         '''Set maximum torque'''
+        if torque is None:
+            torque = [180] * 5
+
         has_non_int = any(not isinstance(x, (int, float)) or x < 0 or x > 255 for x in torque)
         if has_non_int:
             print("Set Torque The numerical range can only be positive integers or floating-point numbers between 0 and 255", flush=True)
@@ -177,8 +198,11 @@ class LinkerHandApi:
         return self.hand.set_torque(torque=torque)
     
     
-    def set_current(self, current=[250] * 5):
+    def set_current(self, current=None):
         '''Set current L7/L10/L25 not supported'''
+        if current is None:
+            current = [250] * 5
+
         if any(not isinstance(x, (int, float)) or x < 0 or x > 255 for x in current):
             print("Set Current The numerical range can only be positive integers or floating-point numbers between 0 and 255", flush=True)
             return
@@ -195,7 +219,7 @@ class LinkerHandApi:
         '''Get serial number'''
         try:
             return self.hand.sn
-        except:
+        except AttributeError:
             return self.hand.get_serial_number()
 
     def get_current(self):
@@ -238,7 +262,7 @@ class LinkerHandApi:
         '''Get touch type'''
         try:
             return self.hand.touch_type
-        except:
+        except AttributeError:
             return self.hand.get_touch_type()
     
     def get_force(self):
@@ -358,7 +382,7 @@ class LinkerHandApi:
         self.hand.show_fun_table()
         
     def close_can(self):
-        if sys.platform == "linux" and modbus=="None":
+        if sys.platform == "linux" and self.modbus == "None":
             self.open_can.close_can(can=self.can)                         
 
 if __name__ == "__main__":

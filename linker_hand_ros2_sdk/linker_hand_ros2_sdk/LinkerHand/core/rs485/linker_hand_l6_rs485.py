@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-import os
 import time
-from pymodbus.client import ModbusSerialClient
-from typing import List, Dict
+from typing import Dict, List
+
 import numpy as np
+from pymodbus.client import ModbusSerialClient
 
 _INTERVAL = 0.006  # 8 ms
 
@@ -108,8 +108,6 @@ class LinkerHandL6RS485:
         write_address = 36  # 写入手指选择 (保持寄存器)
         read_address = 52   # 读取压力数据 (输入寄存器)
         read_count = 71     # 读取 71 个寄存器
-        skip_count = 0      # 不跳过数据点
-        
         # 0. 参数校验和手指写入值确定
         if finger < 1 or finger > 5:
             raise ValueError(f"无效的手指编号: {finger}。手指编号应在 1 到 5 之间。")

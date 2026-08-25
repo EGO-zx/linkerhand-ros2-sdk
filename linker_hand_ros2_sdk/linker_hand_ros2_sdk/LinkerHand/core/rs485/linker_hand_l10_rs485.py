@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-import os
 import time
-import struct
-from typing import Dict, List
+from typing import List
+
 import numpy as np
 from pymodbus.client import ModbusSerialClient
+
 _INTERVAL = 0.005  # 8 ms
 class LinkerHandL10RS485:
     KEYS = ["thumb_cmc_pitch", "thumb_cmc_roll", "index_mcp_pitch", "middle_mcp_pitch",
@@ -72,8 +72,6 @@ class LinkerHandL10RS485:
         rsp = self.cli.read_input_registers(address=158, count=6, slave=self.slave)
         if rsp.isError():
             raise RuntimeError(f"read_versions failed: {rsp}")
-        keys = ["hand_freedom", "hand_version", "hand_number",
-                "hand_direction", "software_version", "hardware_version"]
         #return dict(zip(keys, rsp.registers))
         return rsp.registers
 

@@ -1,18 +1,19 @@
+import matplotlib
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-import matplotlib
+
 matplotlib.use('Qt5Agg')
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
-from PyQt5 import QtWidgets, QtCore
-import numpy as np
 import json
 import sys
-from typing import Dict, List
+from typing import List
+
+import numpy as np
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+from PyQt5 import QtCore, QtWidgets
 
 from linker_hand_ros2_sdk.LinkerHand.utils.init_linker_hand import InitLinkerHand
-
 
 # ---------------------------------------------------------------------------
 # 显示器缩放适配：DPI(像素密度) / 逻辑分辨率 / 窗口尺寸 三个维度
