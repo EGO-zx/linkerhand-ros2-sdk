@@ -4,12 +4,14 @@
 编译: colcon build --symlink-install
 启动命令:ros2 run linker_hand_ros2_sdk linker_hand_sdk
 '''
-import rclpy,math,sys                                     # ROS2 Python接口库
+import rclpy
+import sys                                     # ROS2 Python接口库
 from rclpy.node import Node                      # ROS2 节点类
 import rclpy.time
-from std_msgs.msg import String, Header, Float32MultiArray
-from sensor_msgs.msg import JointState
-import time,threading, json
+from std_msgs.msg import String
+import time
+import threading
+import json
 
 
 class SettingInfoNode(Node):

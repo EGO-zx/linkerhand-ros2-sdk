@@ -3,13 +3,11 @@
 import rclpy
 from rclpy.node import Node
 
-from std_msgs.msg import String,Header
+from std_msgs.msg import Header
 from sensor_msgs.msg import JointState
-import std_msgs.msg
 
 import time
 
-import threading
 
 import signal
 import sys

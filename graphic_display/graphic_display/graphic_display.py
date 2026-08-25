@@ -9,7 +9,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import json
 import sys
-from typing import Dict, List
+from typing import List
 
 from linker_hand_ros2_sdk.LinkerHand.utils.init_linker_hand import InitLinkerHand
 

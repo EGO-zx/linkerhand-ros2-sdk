@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import time
 from pymodbus.client import ModbusSerialClient
 from typing import List, Dict

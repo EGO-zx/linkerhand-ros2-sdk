@@ -282,7 +282,7 @@ class LinkerHandL7Can:
     def get_current_status(self):
         if self.is_lock:
             return self.x01
-        elif self.is_lock == False:
+        elif not self.is_lock:
             self.send_frame(0x01, [],sleep=0.003)
             return self.x01
         

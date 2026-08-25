@@ -1,8 +1,8 @@
 #!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
-from re import A
-import rclpy,sys                                     # ROS2 Python接口库
+import rclpy
+import sys                                     # ROS2 Python接口库
 import time
 import argparse
 import numpy as np
@@ -10,10 +10,9 @@ from rclpy.node import Node                      # ROS2 节点类
 from rclpy.clock import Clock
 from std_msgs.msg import String, Header, Float32MultiArray
 from sensor_msgs.msg import JointState, PointCloud2, PointField
-import json, threading
+import json
 from linker_hand_ros2_sdk.LinkerHand.linker_hand_api import LinkerHandApi
 from linker_hand_ros2_sdk.LinkerHand.utils.color_msg import ColorMsg
-from linker_hand_ros2_sdk.LinkerHand.utils.open_can import OpenCan
 
 # Linker Hand 型号
 HAND_JOINT = "G20"
@@ -91,7 +90,7 @@ class LinkerHandAdvancedG20(Node):
         self.hand_state_pub = self.create_publisher(JointState, f'/cb_{self.hand_type}_hand_state',10)
         # G20电机实时电流。由于电机顺序不同，G20独有
         self.hand_current_pub = self.create_publisher(String, f'/cb_{self.hand_type}_hand_current',10)
-        if self.is_touch == True:
+        if self.is_touch:
             if self.touch_type > 1:
                 ColorMsg(msg=f"{self.hand_type} {self.hand_joint} Equipped with matrix pressure sensing", color='green')
                 self.matrix_touch_pub = self.create_publisher(String, f'/cb_{self.hand_type}_hand_matrix_touch', 10)
@@ -112,15 +111,15 @@ class LinkerHandAdvancedG20(Node):
         time.sleep(0.1)
 
     def hand_control_cb(self, msg):
-        if self.last_hand_post_cmd == None or self.list_check(msg.position) == True:
+        if self.last_hand_post_cmd is None or self.list_check(msg.position):
             self.last_hand_post_cmd = msg.position
-        if self.last_hand_vel_cmd == None or self.list_check(msg.velocity) == True:
+        if self.last_hand_vel_cmd is None or self.list_check(msg.velocity):
             self.last_hand_vel_cmd = msg.velocity
-        if self.last_hand_eff_cmd == None or self.list_check(msg.effort) == True:
+        if self.last_hand_eff_cmd is None or self.list_check(msg.effort):
             self.last_hand_eff_cmd = msg.effort
     
     def list_check(self,pose):
-        if isinstance(pose, list) == False:
+        if not isinstance(pose, list):
             return False
         if len(self.last_hand_post_cmd) != len(pose):
             return False
@@ -144,7 +143,7 @@ class LinkerHandAdvancedG20(Node):
 
     def run(self):
         # 执行手控制指令
-        if self.last_hand_post_cmd != None:
+        if self.last_hand_post_cmd is not None:
             self.api.finger_move(pose=self.last_hand_post_cmd)
             self.last_hand_post_cmd = None
         # 优先获取手指状态并且发布
@@ -164,7 +163,7 @@ class LinkerHandAdvancedG20(Node):
         msg_current.data = json.dumps(current, ensure_ascii=False)
         self.hand_current_pub.publish(msg_current)
 
-        if self.is_touch == True:
+        if self.is_touch:
             # 获取压感数据
             if self.count == 2:
                 self.matrix_dic["thumb_matrix"] = self.api.get_thumb_matrix_touch(sleep_time=TOUCH_SLEEP_TIME).tolist()

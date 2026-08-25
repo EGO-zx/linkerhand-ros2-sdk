@@ -9,9 +9,10 @@ FilePath: /Linker_Hand_SDK_ROS/src/linker_hand_sdk_ros/scripts/LinkerHand/utils/
 Description: 
 symbol_custom_string_obkorol_copyright: 
 '''
-import sys,os,time,subprocess
+import sys
+import os
+import subprocess
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from color_msg import ColorMsg
 from load_write_yaml import LoadWriteYaml
 # from ament_index_python.packages import get_package_share_directory
 import os

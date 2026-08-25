@@ -361,83 +361,152 @@ class LinkerHandG20Can:
             if len(list(response_data)) == 0:
                     return
             # 并联控制指令响应
-            if frame_type == 0x01: self.x01 = list(response_data)
-            elif frame_type == 0x02: self.x02 = list(response_data)
-            elif frame_type == 0x03: self.x03 = list(response_data)
-            elif frame_type == 0x04: self.x04 = list(response_data)
-            elif frame_type == 0x05: self.x05 = list(response_data)
-            elif frame_type == 0x06: self.x06 = list(response_data)
-            elif frame_type == 0x09: self.x09 = list(response_data)
-            elif frame_type == 0x0A: self.x0A = list(response_data)
-            elif frame_type == 0x0B: self.x0B = list(response_data)
-            elif frame_type == 0x0C: self.x0C = list(response_data)
-            elif frame_type == 0x0D: self.x0D = list(response_data)
-            elif frame_type == 0x0E: self.x0E = list(response_data)
-            elif frame_type == 0x11: self.x11 = list(response_data)
-            elif frame_type == 0x12: self.x12 = list(response_data)
-            elif frame_type == 0x13: self.x13 = list(response_data)
-            elif frame_type == 0x14: self.x14 = list(response_data)
-            elif frame_type == 0x15: self.x15 = list(response_data)
-            elif frame_type == 0x16: self.x16 = list(response_data)
-            elif frame_type == 0x19: self.x19 = list(response_data)
-            elif frame_type == 0x1A: self.x1A = list(response_data)
-            elif frame_type == 0x1B: self.x1B = list(response_data)
-            elif frame_type == 0x1C: self.x1C = list(response_data)
-            elif frame_type == 0x1D: self.x1D = list(response_data)
-            elif frame_type == 0x1E: self.x1E = list(response_data)
-            elif frame_type == 0x21: self.x21 = list(response_data)
-            elif frame_type == 0x22: self.x22 = list(response_data)
-            elif frame_type == 0x23: self.x23 = list(response_data)
-            elif frame_type == 0x24: self.x24 = list(response_data)
-            elif frame_type == 0x25: self.x25 = list(response_data)
-            elif frame_type == 0x26: self.x26 = list(response_data)
+            if frame_type == 0x01:
+                self.x01 = list(response_data)
+            elif frame_type == 0x02:
+                self.x02 = list(response_data)
+            elif frame_type == 0x03:
+                self.x03 = list(response_data)
+            elif frame_type == 0x04:
+                self.x04 = list(response_data)
+            elif frame_type == 0x05:
+                self.x05 = list(response_data)
+            elif frame_type == 0x06:
+                self.x06 = list(response_data)
+            elif frame_type == 0x09:
+                self.x09 = list(response_data)
+            elif frame_type == 0x0A:
+                self.x0A = list(response_data)
+            elif frame_type == 0x0B:
+                self.x0B = list(response_data)
+            elif frame_type == 0x0C:
+                self.x0C = list(response_data)
+            elif frame_type == 0x0D:
+                self.x0D = list(response_data)
+            elif frame_type == 0x0E:
+                self.x0E = list(response_data)
+            elif frame_type == 0x11:
+                self.x11 = list(response_data)
+            elif frame_type == 0x12:
+                self.x12 = list(response_data)
+            elif frame_type == 0x13:
+                self.x13 = list(response_data)
+            elif frame_type == 0x14:
+                self.x14 = list(response_data)
+            elif frame_type == 0x15:
+                self.x15 = list(response_data)
+            elif frame_type == 0x16:
+                self.x16 = list(response_data)
+            elif frame_type == 0x19:
+                self.x19 = list(response_data)
+            elif frame_type == 0x1A:
+                self.x1A = list(response_data)
+            elif frame_type == 0x1B:
+                self.x1B = list(response_data)
+            elif frame_type == 0x1C:
+                self.x1C = list(response_data)
+            elif frame_type == 0x1D:
+                self.x1D = list(response_data)
+            elif frame_type == 0x1E:
+                self.x1E = list(response_data)
+            elif frame_type == 0x21:
+                self.x21 = list(response_data)
+            elif frame_type == 0x22:
+                self.x22 = list(response_data)
+            elif frame_type == 0x23:
+                self.x23 = list(response_data)
+            elif frame_type == 0x24:
+                self.x24 = list(response_data)
+            elif frame_type == 0x25:
+                self.x25 = list(response_data)
+            elif frame_type == 0x26:
+                self.x26 = list(response_data)
             
             # 串联控制指令响应
-            elif frame_type == 0x41: self.x41 = list(response_data)
-            elif frame_type == 0x42: self.x42 = list(response_data)
-            elif frame_type == 0x43: self.x43 = list(response_data)
-            elif frame_type == 0x44: self.x44 = list(response_data)
-            elif frame_type == 0x45: self.x45 = list(response_data)
-            elif frame_type == 0x49: self.x49 = list(response_data)
-            elif frame_type == 0x4A: self.x4A = list(response_data)
-            elif frame_type == 0x4B: self.x4B = list(response_data)
-            elif frame_type == 0x4C: self.x4C = list(response_data)
-            elif frame_type == 0x4D: self.x4D = list(response_data)
-            elif frame_type == 0x51: self.x51 = list(response_data)
-            elif frame_type == 0x52: self.x52 = list(response_data)
-            elif frame_type == 0x53: self.x53 = list(response_data)
-            elif frame_type == 0x54: self.x54 = list(response_data)
-            elif frame_type == 0x55: self.x55 = list(response_data)
-            elif frame_type == 0x59: self.x59 = list(response_data)
-            elif frame_type == 0x5A: self.x5A = list(response_data)
-            elif frame_type == 0x5B: self.x5B = list(response_data)
-            elif frame_type == 0x5C: self.x5C = list(response_data)
-            elif frame_type == 0x5D: self.x5D = list(response_data)
-            elif frame_type == 0x61: self.x61 = list(response_data)
-            elif frame_type == 0x62: self.x62 = list(response_data)
-            elif frame_type == 0x63: self.x63 = list(response_data)
-            elif frame_type == 0x64: self.x64 = list(response_data)
-            elif frame_type == 0x65: self.x65 = list(response_data)
+            elif frame_type == 0x41:
+                self.x41 = list(response_data)
+            elif frame_type == 0x42:
+                self.x42 = list(response_data)
+            elif frame_type == 0x43:
+                self.x43 = list(response_data)
+            elif frame_type == 0x44:
+                self.x44 = list(response_data)
+            elif frame_type == 0x45:
+                self.x45 = list(response_data)
+            elif frame_type == 0x49:
+                self.x49 = list(response_data)
+            elif frame_type == 0x4A:
+                self.x4A = list(response_data)
+            elif frame_type == 0x4B:
+                self.x4B = list(response_data)
+            elif frame_type == 0x4C:
+                self.x4C = list(response_data)
+            elif frame_type == 0x4D:
+                self.x4D = list(response_data)
+            elif frame_type == 0x51:
+                self.x51 = list(response_data)
+            elif frame_type == 0x52:
+                self.x52 = list(response_data)
+            elif frame_type == 0x53:
+                self.x53 = list(response_data)
+            elif frame_type == 0x54:
+                self.x54 = list(response_data)
+            elif frame_type == 0x55:
+                self.x55 = list(response_data)
+            elif frame_type == 0x59:
+                self.x59 = list(response_data)
+            elif frame_type == 0x5A:
+                self.x5A = list(response_data)
+            elif frame_type == 0x5B:
+                self.x5B = list(response_data)
+            elif frame_type == 0x5C:
+                self.x5C = list(response_data)
+            elif frame_type == 0x5D:
+                self.x5D = list(response_data)
+            elif frame_type == 0x61:
+                self.x61 = list(response_data)
+            elif frame_type == 0x62:
+                self.x62 = list(response_data)
+            elif frame_type == 0x63:
+                self.x63 = list(response_data)
+            elif frame_type == 0x64:
+                self.x64 = list(response_data)
+            elif frame_type == 0x65:
+                self.x65 = list(response_data)
             
             # 合并指令区域响应
-            elif frame_type == 0x81: self.x81 = list(response_data)
-            elif frame_type == 0x82: self.x82 = list(response_data)
-            elif frame_type == 0x83: self.x83 = list(response_data)
-            elif frame_type == 0x84: self.x84 = list(response_data)
+            elif frame_type == 0x81:
+                self.x81 = list(response_data)
+            elif frame_type == 0x82:
+                self.x82 = list(response_data)
+            elif frame_type == 0x83:
+                self.x83 = list(response_data)
+            elif frame_type == 0x84:
+                self.x84 = list(response_data)
             
             # 传感器数据响应
-            elif frame_type == 0x90: self.x90 = list(response_data)
-            elif frame_type == 0x91: self.x91 = list(response_data)
-            elif frame_type == 0x92: self.x92 = list(response_data)
-            elif frame_type == 0x93: self.x93 = list(response_data)
-            elif frame_type == 0x98: self.x98 = list(response_data)
-            elif frame_type == 0x99: self.x99 = list(response_data)
-            elif frame_type == 0x9A: self.x9A = list(response_data)
-            elif frame_type == 0x9B: self.x9B = list(response_data)
-            elif frame_type == 0x9C: self.x9C = list(response_data)
+            elif frame_type == 0x90:
+                self.x90 = list(response_data)
+            elif frame_type == 0x91:
+                self.x91 = list(response_data)
+            elif frame_type == 0x92:
+                self.x92 = list(response_data)
+            elif frame_type == 0x93:
+                self.x93 = list(response_data)
+            elif frame_type == 0x98:
+                self.x98 = list(response_data)
+            elif frame_type == 0x99:
+                self.x99 = list(response_data)
+            elif frame_type == 0x9A:
+                self.x9A = list(response_data)
+            elif frame_type == 0x9B:
+                self.x9B = list(response_data)
+            elif frame_type == 0x9C:
+                self.x9C = list(response_data)
             
             # 触觉传感器响应
-            elif frame_type == 0xB0: self.xB0 = list(response_data)
+            elif frame_type == 0xB0:
+                self.xB0 = list(response_data)
             # 单指触觉传感(B1~B5)：五指逻辑一致，统一处理，合力值个数自动适配
             elif frame_type in (0xB1, 0xB2, 0xB3, 0xB4, 0xB5):
                 self._store_finger_touch(frame_type, list(response_data))
@@ -476,10 +545,14 @@ class LinkerHandG20Can:
                     self.serial_number=self.serial_number + d[1:]
                 else:
                     self.serial_number=self.serial_number + [-1] * 6
-            elif frame_type == 0xC1: self.xC1 = list(response_data)
-            elif frame_type == 0xC2: self.xC2 = list(response_data)
-            elif frame_type == 0xC3: self.xC3 = list(response_data)
-            elif frame_type == 0xC4: self.xC4 = list(response_data)
+            elif frame_type == 0xC1:
+                self.xC1 = list(response_data)
+            elif frame_type == 0xC2:
+                self.xC2 = list(response_data)
+            elif frame_type == 0xC3:
+                self.xC3 = list(response_data)
+            elif frame_type == 0xC4:
+                self.xC4 = list(response_data)
 
 
     

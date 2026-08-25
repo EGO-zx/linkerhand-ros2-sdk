@@ -1,6 +1,8 @@
 #!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
-import sys, os, time,threading
+import sys
+import os
+import time
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from utils.mapping import (
     arc_to_range_left,
@@ -85,7 +87,7 @@ class LinkerHandApi:
                 sys.exit(1)
         version = self.get_embedded_version()
         self.serial_number = self.get_serial_number()
-        if version == None or len(version) == 0:
+        if version is None or len(version) == 0:
             ColorMsg(msg="Warning: Hardware version number not recognized, it is recommended to terminate the program and re insert USB to CAN conversion", color="yellow")
         else:
             ColorMsg(msg=f"Embedded:{version}", color="green")

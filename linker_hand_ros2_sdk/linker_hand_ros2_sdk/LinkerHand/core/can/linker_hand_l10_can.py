@@ -344,7 +344,7 @@ class LinkerHandL10Can:
     
     def get_current_status(self):
         '''Get current joint status'''
-        if self.is_cmd == False:
+        if not self.is_cmd:
             #if self.version != None and self.version[4] > 35:
             self.send_frame(0x01,[],sleep=0.003)
             self.send_frame(0x04,[],sleep=0.003)

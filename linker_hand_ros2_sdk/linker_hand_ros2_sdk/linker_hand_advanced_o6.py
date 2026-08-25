@@ -4,8 +4,8 @@
 编译: colcon build --symlink-install
 启动命令:ros2 run linker_hand_ros2_sdk linker_hand_sdk
 '''
-from re import A
-import rclpy,sys                                     # ROS2 Python接口库
+import rclpy
+import sys                                     # ROS2 Python接口库
 import time
 import argparse
 import numpy as np
@@ -13,10 +13,9 @@ from rclpy.node import Node                      # ROS2 节点类
 from rclpy.clock import Clock
 from std_msgs.msg import String, Header, Float32MultiArray
 from sensor_msgs.msg import JointState, PointCloud2, PointField
-import json, threading
+import json
 from linker_hand_ros2_sdk.LinkerHand.linker_hand_api import LinkerHandApi
 from linker_hand_ros2_sdk.LinkerHand.utils.color_msg import ColorMsg
-from linker_hand_ros2_sdk.LinkerHand.utils.open_can import OpenCan
 
 class LinkerHandAdvancedO6(Node):
     def __init__(self, name, hand_type, can, is_touch):
@@ -79,7 +78,7 @@ class LinkerHandAdvancedO6(Node):
         self.touch_type = self.api.get_touch_type()
         self.hand_cmd_sub = self.create_subscription(JointState, f'/cb_{self.hand_type}_hand_control_cmd', self.hand_control_cb,10)
         self.hand_state_pub = self.create_publisher(JointState, f'/cb_{self.hand_type}_hand_state',10)
-        if self.is_touch == True:
+        if self.is_touch:
             if self.touch_type > 1:
                 ColorMsg(msg=f"{self.hand_type} {self.hand_joint} Equipped with matrix pressure sensing", color='green')
                 self.matrix_touch_pub = self.create_publisher(String, f'/cb_{self.hand_type}_hand_matrix_touch', 10)
@@ -104,15 +103,15 @@ class LinkerHandAdvancedO6(Node):
             time.sleep(0.1)
 
     def hand_control_cb(self, msg):
-        if self.last_hand_post_cmd == None or self.list_check(msg.position) == True:
+        if self.last_hand_post_cmd is None or self.list_check(msg.position):
             self.last_hand_post_cmd = msg.position
-        if self.last_hand_vel_cmd == None or self.list_check(msg.velocity) == True:
+        if self.last_hand_vel_cmd is None or self.list_check(msg.velocity):
             self.last_hand_vel_cmd = msg.velocity
-        if self.last_hand_eff_cmd == None or self.list_check(msg.effort) == True:
+        if self.last_hand_eff_cmd is None or self.list_check(msg.effort):
             self.last_hand_eff_cmd = msg.effort
     
     def list_check(self,pose):
-        if isinstance(pose, list) == False:
+        if not isinstance(pose, list):
             return False
         if len(self.last_hand_post_cmd) != len(pose):
             return False
@@ -136,10 +135,10 @@ class LinkerHandAdvancedO6(Node):
 
     def run(self):
         # 执行手控制指令
-        if self.last_hand_post_cmd != None:
+        if self.last_hand_post_cmd is not None:
             self.api.finger_move(pose=self.last_hand_post_cmd)
             self.last_hand_post_cmd = None
-        if self.last_hand_vel_cmd != None:
+        if self.last_hand_vel_cmd is not None:
             vel = list(self.last_hand_vel_cmd)
             if all(x == 0 for x in vel):
                 pass
@@ -154,7 +153,7 @@ class LinkerHandAdvancedO6(Node):
         # 发布手状态
         msg_state = self.joint_state_msg(self.last_hand_state, self.last_hand_vel, self.last_hand_eff)
         self.hand_state_pub.publish(msg_state)
-        if self.is_touch == True:
+        if self.is_touch:
             # 获取压感数据
             self.matrix_dic["thumb_matrix"] = self.api.get_thumb_matrix_touch(sleep_time=0.002).tolist()
             self.matrix_dic["index_matrix"] = self.api.get_index_matrix_touch(sleep_time=0.002).tolist()

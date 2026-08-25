@@ -3,9 +3,8 @@
 O6 机械手 Modbus-RTU 控制类 (基于 pymodbus 3.5.1)
 """
 
-import os
 import time
-from typing import List, Dict, Any # 引入 Any 来表示灵活的输入类型
+from typing import List, Any # 引入 Any 来表示灵活的输入类型
 import numpy as np
 import logging
 from threading import Lock # 用于线程安全和总线仲裁

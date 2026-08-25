@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
-import os
 import time
-import struct
-from typing import Dict, List
+from typing import List
 import numpy as np
 from pymodbus.client import ModbusSerialClient
 _INTERVAL = 0.005  # 8 ms

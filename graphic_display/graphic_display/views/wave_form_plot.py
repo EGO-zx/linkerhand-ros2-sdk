@@ -1,9 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QVBoxLayout, QWidget
 from PyQt5.QtCore import QTimer
 import sys
-import random
 import matplotlib.pyplot as plt
-from matplotlib import font_manager, rcParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 class WaveformPlot(QWidget):

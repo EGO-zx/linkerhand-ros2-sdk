@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import time
-from typing import List, Dict, Union
+from typing import List, Dict
 import numpy as np
 from pymodbus.client import ModbusSerialClient
 from pymodbus.exceptions import ModbusException
@@ -126,7 +126,8 @@ class LinkerHandL7RS485:
             write_func = self.cli.write_registers
         # 单个写入 (FC 06)
         elif len(values) == 1:
-            write_func = lambda address, values, slave: self.cli.write_register(address, values[0], slave)
+            def write_func(address, values, slave):
+                return self.cli.write_register(address, values[0], slave)
         else:
              raise ValueError("写入值列表不能为空。")
 

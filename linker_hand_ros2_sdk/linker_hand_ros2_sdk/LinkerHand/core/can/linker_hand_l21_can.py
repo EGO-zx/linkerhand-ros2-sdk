@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import can
-import time, sys, os
+import time
+import sys
+import os
 import threading
 import numpy as np
 from enum import Enum
@@ -308,7 +310,7 @@ class LinkerHandL21Can:
         return sliced_list
 
     def _list_d_value(self,list1, list2):
-        if list1 == None:
+        if list1 is None:
             return True
         for a, b in zip(list1, list2):
             if abs(b - a) > 2:
@@ -408,12 +410,12 @@ class LinkerHandL21Can:
         i = torque[1]
         m = torque[2]
         r = torque[3]
-        l = torque[4]
+        little_torque = torque[4]
         self.set_thumb_torque(j=[t]*5)
         self.set_index_torque(j=[i]*5)
         self.set_middle_torque(j=[m]*5)
         self.set_ring_torque(j=[r]*5)
-        self.set_little_torque(j=[l]*5)
+        self.set_little_torque(j=[little_torque]*5)
     
     def set_speed(self, speed):
         self.speed = speed

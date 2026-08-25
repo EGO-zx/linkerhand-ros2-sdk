@@ -1,13 +1,13 @@
 import sys
-import time, json
+import time
+import json
 import threading
-from dataclasses import dataclass
-from typing import List, Dict
+from typing import List
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, Header
 from sensor_msgs.msg import JointState
-from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QObject, QEvent
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QObject
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, 
     QSlider, QLabel, QPushButton, QGroupBox, QScrollArea, QTabWidget, 
@@ -59,7 +59,7 @@ class ROS2NodeManager(QObject):
             self.hz = self.node.get_parameter('topic_hz').value
             self.is_arc = self.node.get_parameter('is_arc').value
             
-            if self.is_arc == True:
+            if self.is_arc:
                 # 创建发布者
                 self.publisher_arc = self.node.create_publisher(
                     JointState, f'/cb_{self.hand_type}_hand_control_cmd_arc', 10
@@ -102,13 +102,13 @@ class ROS2NodeManager(QObject):
             #hand_config = HandConfig.from_hand_type(self.hand_joint)
             hand_config = _HAND_CONFIGS[self.hand_joint]
             if len(hand_config.joint_names) == len(positions):
-                if hand_config.joint_names_en != None:
+                if hand_config.joint_names_en is not None:
                     self.joint_state.name = hand_config.joint_names_en
                 else:
                     self.joint_state.name = hand_config.joint_names
                 
             self.publisher.publish(self.joint_state)
-            if self.is_arc == True:
+            if self.is_arc:
                 if self.hand_joint == "O6":
                     if self.hand_type == "left":
                         pose = range_to_arc_left(positions,self.hand_joint)
