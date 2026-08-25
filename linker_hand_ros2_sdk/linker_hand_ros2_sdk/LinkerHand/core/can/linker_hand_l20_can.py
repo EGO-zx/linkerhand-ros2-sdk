@@ -1,12 +1,14 @@
 import sys
-import time
-import can
 import threading
+import time
 from enum import Enum
+
+import can
 import numpy as np
-from utils.open_can import OpenCan
-from utils.color_msg import ColorMsg
 from can.exceptions import CanError
+from utils.color_msg import ColorMsg
+from utils.open_can import OpenCan
+
 
 class FrameProperty(Enum):
     INVALID_FRAME_PROPERTY = 0x00  # Invalid CAN frame property | No return

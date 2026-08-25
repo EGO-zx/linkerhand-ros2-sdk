@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import rclpy
-from rclpy.node import Node
-from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
+import json
 import signal
 import sys
-import json
+
 import numpy as np
-from std_msgs.msg import String
-from PyQt5 import QtWidgets, QtCore, QtGui
 import pyqtgraph as pg
+import rclpy
+from PyQt5 import QtCore, QtGui, QtWidgets
+from rclpy.node import Node
+from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
+from std_msgs.msg import String
 
 pg.setConfigOption('imageAxisOrder', 'row-major')
 pg.setConfigOption('useOpenGL', False)

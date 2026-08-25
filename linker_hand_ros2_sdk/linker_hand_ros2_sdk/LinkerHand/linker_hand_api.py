@@ -1,18 +1,20 @@
 #!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
-import sys
 import os
+import sys
 import time
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from utils.color_msg import ColorMsg
+from utils.load_write_yaml import LoadWriteYaml
 from utils.mapping import (
     arc_to_range_left,
     arc_to_range_right,
     range_to_arc_left,
     range_to_arc_right,
 )
-from utils.color_msg import ColorMsg
-from utils.load_write_yaml import LoadWriteYaml
 from utils.open_can import OpenCan
+
 
 class LinkerHandApi:
     def __init__(self, hand_type="left", hand_joint="L10", modbus = "None",can="can0"):  # Ubuntu:can0   win:PCAN_USBBUS1

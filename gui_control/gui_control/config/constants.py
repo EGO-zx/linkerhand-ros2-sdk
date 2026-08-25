@@ -1,7 +1,8 @@
 # hand_config_const.py
-from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from types import MappingProxyType
+from typing import Dict, List, Optional
+
 
 @dataclass(frozen=True)        # frozen=True 让实例真正只读
 class HandConfig:

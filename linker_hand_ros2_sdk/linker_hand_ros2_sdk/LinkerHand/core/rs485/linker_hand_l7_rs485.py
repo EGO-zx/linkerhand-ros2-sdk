@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import time
-from typing import List, Dict
+from typing import Dict, List
+
 import numpy as np
 from pymodbus.client import ModbusSerialClient
 from pymodbus.exceptions import ModbusException

@@ -1,11 +1,12 @@
-import can
-import time
 import sys
 import threading
+import time
+
+import can
 import numpy as np
-from utils.open_can import OpenCan
-from utils.color_msg import ColorMsg
 from can.exceptions import CanError
+from utils.color_msg import ColorMsg
+from utils.open_can import OpenCan
 
 
 class LinkerHandO6Can:

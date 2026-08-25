@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import time
 from typing import List
+
 import numpy as np
 from pymodbus.client import ModbusSerialClient
+
 _INTERVAL = 0.005  # 8 ms
 class LinkerHandL10RS485:
     KEYS = ["thumb_cmc_pitch", "thumb_cmc_roll", "index_mcp_pitch", "middle_mcp_pitch",

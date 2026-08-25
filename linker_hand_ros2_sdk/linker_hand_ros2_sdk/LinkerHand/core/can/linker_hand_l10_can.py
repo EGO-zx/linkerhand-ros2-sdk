@@ -1,16 +1,17 @@
 #!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
-import can
-import time
 import sys
 import threading
-import numpy as np
+import time
+
 #from tabulate import tabulate
 from enum import Enum
-from utils.open_can import OpenCan
-from utils.color_msg import ColorMsg
-from can.exceptions import CanError
 
+import can
+import numpy as np
+from can.exceptions import CanError
+from utils.color_msg import ColorMsg
+from utils.open_can import OpenCan
 
 
 class FrameProperty(Enum):

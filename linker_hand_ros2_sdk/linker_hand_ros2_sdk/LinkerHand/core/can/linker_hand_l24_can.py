@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-import can
-import time
-import sys
 import os
+import sys
 import threading
+import time
 from enum import Enum
+
+import can
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 target_dir = os.path.abspath(os.path.join(current_dir, ".."))
 sys.path.append(target_dir)
 from utils.color_msg import ColorMsg  # noqa: E402
+
 
 class FrameProperty(Enum):
     INVALID_FRAME_PROPERTY = 0x00  # 无效的can帧属性 | 无返回

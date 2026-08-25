@@ -1,20 +1,34 @@
-import sys
-import time
 import json
+import sys
 import threading
+import time
 from typing import List
-import rclpy
-from rclpy.node import Node
-from std_msgs.msg import String, Header
-from sensor_msgs.msg import JointState
-from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QObject
-from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, 
-    QSlider, QLabel, QPushButton, QGroupBox, QScrollArea, QTabWidget, 
-    QFrame, QSplitter, QMessageBox, QTextEdit
-)
-from PyQt5.QtGui import QFont
 
+import rclpy
+from PyQt5.QtCore import QObject, Qt, QTimer, pyqtSignal
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import (
+    QApplication,
+    QFrame,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QScrollArea,
+    QSlider,
+    QSplitter,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+from rclpy.node import Node
+from sensor_msgs.msg import JointState
+from std_msgs.msg import Header, String
+
+from .config.constants import _HAND_CONFIGS
 from .utils.mapping import (
     range_to_arc_left,
     range_to_arc_left_10,
@@ -24,7 +38,6 @@ from .utils.mapping import (
     range_to_arc_right_l20,
 )
 
-from .config.constants import _HAND_CONFIGS
 LOOP_TIME = 1000 # 循环动作间隔时间 毫秒
 class ROS2NodeManager(QObject):
     """ROS2节点管理器，处理ROS通信"""

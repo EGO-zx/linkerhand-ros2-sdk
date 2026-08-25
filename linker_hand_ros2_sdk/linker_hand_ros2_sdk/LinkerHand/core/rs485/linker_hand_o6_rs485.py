@@ -3,15 +3,16 @@
 O6 机械手 Modbus-RTU 控制类 (基于 pymodbus 3.5.1)
 """
 
-import time
-from typing import List, Any # 引入 Any 来表示灵活的输入类型
-import numpy as np
 import logging
-from threading import Lock # 用于线程安全和总线仲裁
+import time
+from struct import error as StructError
+from threading import Lock  # 用于线程安全和总线仲裁
+from typing import Any, List  # 引入 Any 来表示灵活的输入类型
+
+import numpy as np
 
 # 导入 pymodbus 客户端
 from pymodbus.client import ModbusSerialClient
-from struct import error as StructError 
 
 logging.basicConfig(
     level=logging.INFO,

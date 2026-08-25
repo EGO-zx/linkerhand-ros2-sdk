@@ -1,8 +1,10 @@
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QWidget
-from PyQt5.QtCore import QTimer
 import sys
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QWidget
+
 
 class TemperaturePlot(QWidget):
     def __init__(self, num_lines=10, labels=None, title="Temperature Plot"):

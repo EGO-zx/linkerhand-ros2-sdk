@@ -1,15 +1,17 @@
 #!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
-import rclpy
-import sys                                     # ROS2 Python接口库
-import time
 import argparse
-from rclpy.node import Node                      # ROS2 节点类
-from rclpy.clock import Clock
-from std_msgs.msg import String, Header, Float32MultiArray
-from sensor_msgs.msg import JointState
 import json
+import sys  # ROS2 Python接口库
+import time
+
+import rclpy
+from rclpy.clock import Clock
+from rclpy.node import Node  # ROS2 节点类
+from sensor_msgs.msg import JointState
+from std_msgs.msg import Float32MultiArray, Header, String
+
 from linker_hand_ros2_sdk.LinkerHand.linker_hand_api import LinkerHandApi
 from linker_hand_ros2_sdk.LinkerHand.utils.color_msg import ColorMsg
 

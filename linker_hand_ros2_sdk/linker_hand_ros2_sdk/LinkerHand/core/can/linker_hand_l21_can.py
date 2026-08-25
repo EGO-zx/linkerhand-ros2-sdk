@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-import can
-import time
-import sys
 import os
+import sys
 import threading
-import numpy as np
+import time
 from enum import Enum
-from utils.open_can import OpenCan
-from utils.color_msg import ColorMsg
+
+import can
+import numpy as np
 from can.exceptions import CanError
+from utils.color_msg import ColorMsg
+from utils.open_can import OpenCan
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 target_dir = os.path.abspath(os.path.join(current_dir, ".."))
 sys.path.append(target_dir)

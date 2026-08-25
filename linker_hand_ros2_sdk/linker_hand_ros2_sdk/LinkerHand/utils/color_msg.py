@@ -2,6 +2,7 @@
 
 import time
 
+
 class ColorMsg():
     def __init__(self,msg: str,color: str = '', timestamp: bool = True) -> None:
         self.msg = msg
