@@ -22,9 +22,11 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - name: Reject generated and new backup files tracked by Git
+      - name: Reject generated and backup files tracked by Git
         shell: bash
         run: |
           set -euo pipefail
@@ -40,27 +42,11 @@ jobs:
             exit 1
           fi
 
-          # Grandfather the current snapshots until they are cleaned up separately.
-          unexpected_backup_files="$(
-            comm -13 \
-              <(printf '%s\n' \
-                'gui_control/gui_control/gui_control.py.ttk' \
-                'linker_hand_ros2_sdk/launch/test.bak' \
-                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/can/linker_hand_g20_can.py.bak' \
-                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/can/linker_hand_l6_can.py.bak' \
-                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/can/linker_hand_o6_can.py.bak' \
-                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/rs485/linker_hand_l6_rs485.py.bak' \
-                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/core/rs485/linker_hand_o6_rs485.py.bak' \
-                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/linker_hand_api.py.bak' \
-                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/linker_hand.py.bak' \
-                'linker_hand_ros2_sdk/linker_hand_ros2_sdk/linker_hand_advanced_o6.py.bak' \
-                | sort) \
-              <(git ls-files '*.bak' '*.ttk' | sort)
-          )"
+          backup_files="$(git ls-files '*.bak' '*.ttk')"
 
-          if [[ -n "${unexpected_backup_files}" ]]; then
-            echo "New *.bak and *.ttk files must not be committed:"
-            echo "${unexpected_backup_files}"
+          if [[ -n "${backup_files}" ]]; then
+            echo "*.bak and *.ttk files must not be committed:"
+            echo "${backup_files}"
             exit 1
           fi
 
@@ -124,5 +110,5 @@ jobs:
               ET.parse(path)
           PY
 
-      - name: Check critical Python errors
-        run: ruff check --select E9,F63,F7,F82 .
+      - name: Check Python lint
+        run: ruff check .
