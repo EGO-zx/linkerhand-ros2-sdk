@@ -347,9 +347,11 @@ class LinkerHand(Node):
 
     def hand_setting_cb(self,msg):
         '''控制命令回调'''
-        data = json.loads(msg.data)
-        print(f"Received setting command: {data['setting_cmd']}",flush=True)
         try:
+            data = json.loads(msg.data)
+            print(f"Received setting command: {data['setting_cmd']}",flush=True)
+            hand_left = False
+            hand_right = False
             if data["params"]["hand_type"] == "left":
                 hand = self.api
                 hand_left = True
@@ -388,7 +390,7 @@ class LinkerHand(Node):
                     hand.set_current(data["params"]["current"])
             if data["setting_cmd"] == "show_fun_table": # Get faults
                 f = hand.show_fun_table()
-        except:
+        except (json.JSONDecodeError, KeyError, TypeError):
             print("命令参数错误")
             self.cmd_lock = False
         finally:

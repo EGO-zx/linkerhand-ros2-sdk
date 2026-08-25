@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import can
-import time, sys, os
+import time
+import sys
+import os
 import threading
 import numpy as np
 from enum import Enum
@@ -1259,7 +1261,7 @@ class LinkerHandG20Can:
                 # print(f"原始 ASCII 码列表: {self.serial_number}")
                 # print(f"解码后的字符串: {result_string}")
                 return result_string
-        except:
+        except Exception:
             return "-1"
     def get_finger_order(self):
         return ["Thumb Base", "Index Finger Base", "Middle Finger Base", "Ring Finger Base", "Pinky Finger Base", "Thumb Abduction", "Index Finger Abduction", "Middle Finger Abduction", "Ring Finger Abduction", "Pinky Finger Abduction", "Thumb Horizontal Abduction", "Reserved", "Reserved", "Reserved", "Reserved", "Thumb Tip", "Index Finger Tip", "Middle Finger Tip", "Ring Finger Tip", "Pinky Finger Tip"]

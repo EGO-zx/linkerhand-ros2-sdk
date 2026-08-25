@@ -15,7 +15,14 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QFont
 
-from .utils.mapping import *
+from .utils.mapping import (
+    range_to_arc_left,
+    range_to_arc_left_10,
+    range_to_arc_left_l20,
+    range_to_arc_right,
+    range_to_arc_right_10,
+    range_to_arc_right_l20,
+)
 
 from .config.constants import _HAND_CONFIGS
 LOOP_TIME = 1000 # 循环动作间隔时间 毫秒

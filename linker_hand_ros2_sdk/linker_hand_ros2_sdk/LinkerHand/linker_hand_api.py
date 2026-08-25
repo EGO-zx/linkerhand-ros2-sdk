@@ -2,7 +2,12 @@
 # -*- coding: utf-8 -*-
 import sys, os, time,threading
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from utils.mapping import *
+from utils.mapping import (
+    arc_to_range_left,
+    arc_to_range_right,
+    range_to_arc_left,
+    range_to_arc_right,
+)
 from utils.color_msg import ColorMsg
 from utils.load_write_yaml import LoadWriteYaml
 from utils.open_can import OpenCan
@@ -14,6 +19,7 @@ class LinkerHandApi:
         self.config = self.yaml.load_setting_yaml()
         self.version = self.config["VERSION"]
         self.can = can
+        self.modbus = modbus
         ColorMsg(msg=f"Current SDK version: {self.version}", color="green")
         self.hand_joint = hand_joint
         self.hand_type = hand_type
@@ -195,7 +201,7 @@ class LinkerHandApi:
         '''Get serial number'''
         try:
             return self.hand.sn
-        except:
+        except AttributeError:
             return self.hand.get_serial_number()
 
     def get_current(self):
@@ -238,7 +244,7 @@ class LinkerHandApi:
         '''Get touch type'''
         try:
             return self.hand.touch_type
-        except:
+        except AttributeError:
             return self.hand.get_touch_type()
     
     def get_force(self):
@@ -358,7 +364,7 @@ class LinkerHandApi:
         self.hand.show_fun_table()
         
     def close_can(self):
-        if sys.platform == "linux" and modbus=="None":
+        if sys.platform == "linux" and self.modbus == "None":
             self.open_can.close_can(can=self.can)                         
 
 if __name__ == "__main__":

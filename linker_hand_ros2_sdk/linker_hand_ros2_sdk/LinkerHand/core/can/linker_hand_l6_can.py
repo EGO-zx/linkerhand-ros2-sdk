@@ -1,5 +1,6 @@
 import can
-import time, sys
+import time
+import sys
 import threading
 import numpy as np
 from utils.open_can import OpenCan
@@ -239,12 +240,11 @@ class LinkerHandL6Can:
         """Process received CAN messages."""
         #if msg.arbitration_id == self.can_id:
         if msg.arbitration_id in (self.can_id, self.can_id + 8):
-            try:
-                frame_type = msg.data[0]
-                response_data = msg.data[1:]
-                if len(list(response_data)) == 0:
-                    return
-            except:
+            if not msg.data:
+                return
+            frame_type = msg.data[0]
+            response_data = msg.data[1:]
+            if len(list(response_data)) == 0:
                 return
             if frame_type == 0x01:   # 0x01
                 self.x01 = list(response_data)
@@ -515,7 +515,7 @@ class LinkerHandL6Can:
                 # print(f"原始 ASCII 码列表: {self.serial_number}")
                 # print(f"解码后的字符串: {result_string}")
                 return result_string
-        except:
+        except Exception:
             return "-1"
 
     def close_can_interface(self):

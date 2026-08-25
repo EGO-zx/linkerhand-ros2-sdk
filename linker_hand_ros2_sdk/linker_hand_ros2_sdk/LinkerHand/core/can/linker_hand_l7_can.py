@@ -1,5 +1,6 @@
 import can
-import time, sys
+import time
+import sys
 import threading
 import numpy as np
 from utils.open_can import OpenCan
@@ -397,7 +398,7 @@ class LinkerHandL7Can:
                 # print(f"原始 ASCII 码列表: {self.serial_number}")
                 # print(f"解码后的字符串: {result_string}")
                 return result_string
-        except:
+        except Exception:
             return "-1"
     
     def get_finger_order(self):

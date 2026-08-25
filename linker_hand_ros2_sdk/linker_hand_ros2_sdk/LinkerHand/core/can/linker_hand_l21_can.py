@@ -699,10 +699,9 @@ class LinkerHandL21Can:
     def get_touch_type(self):
         '''Get tactile sensor type data'''
         self.send_command(FrameProperty.TOUCH_SENSOR_TYPE,[])
-        try:
-            return self.xb0[0]
-        except:
-            pass
+        if not self.xb0:
+            return None
+        return self.xb0[0]
     def get_finger_torque(self):
         self.send_command(FrameProperty.THUMB_TORQUE,[])
         self.send_command(FrameProperty.INDEX_TORQUE,[])
@@ -756,10 +755,10 @@ class LinkerHandL21Can:
         self.get_ring_touch()
         self.get_little_touch()
         self.get_palm_touch()
-        try:
-            return [self.xb1[1],self.xb2[1] , self.xb3[1] , self.xb4[1],self.xb5[1],self.xb6[1]]
-        except:
-            pass
+        touch_data = (self.xb1, self.xb2, self.xb3, self.xb4, self.xb5, self.xb6)
+        if any(len(values) < 2 for values in touch_data):
+            return None
+        return [values[1] for values in touch_data]
 
     def get_matrix_touch(self):
         self.send_command(0xb1,[0xc6],sleep_time=0.04)
