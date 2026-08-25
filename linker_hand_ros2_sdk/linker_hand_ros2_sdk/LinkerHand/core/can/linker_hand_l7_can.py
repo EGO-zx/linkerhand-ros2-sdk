@@ -141,20 +141,24 @@ class LinkerHandL7Can:
         else:
             self.pressures = pressures[:7]
 
-    def set_torque(self, torque=[180] * 7):
+    def set_torque(self, torque=None):
         """Set L7 maximum torque limits."""
+        if torque is None:
+            torque = [180] * 7
         if len(torque) != 7:
             raise ValueError("Torque list must have 7 elements.")
             return
         self.send_frame(0x02, torque)
 
-    def set_speed(self, speed=[180] * 7):
+    def set_speed(self, speed=None):
         """Set L7 speed."""
+        if speed is None:
+            speed = [180] * 7
         if len(speed) != 7:
             raise ValueError("Speed list must have 7 elements.")
             return
         self.x05 = speed
-        for i in range(2):
+        for _ in range(2):
             time.sleep(0.001)
             self.send_frame(0x05, speed)
 
@@ -310,7 +314,7 @@ class LinkerHandL7Can:
         '''Get touch type'''
         self.send_frame(0xb1,[])
         t = []
-        for i in range(3):
+        for _ in range(3):
             t = self.xb1
             time.sleep(0.01)
         if len(t) == 2:
@@ -408,8 +412,10 @@ class LinkerHandL7Can:
     def show_fun_table(self):
         pass
 
-    def clear_faults(self, finger_mask=[1, 1, 1, 1, 1]):
+    def clear_faults(self, finger_mask=None):
         """L7 暂不支持清除故障码"""
+        if finger_mask is None:
+            finger_mask = [1, 1, 1, 1, 1]
         pass
 
     def close_can_interface(self):

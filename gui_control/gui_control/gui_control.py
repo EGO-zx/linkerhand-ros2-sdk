@@ -485,7 +485,7 @@ class HandControlGUI(QWidget):
         self.preset_buttons = []  # 清空按钮列表
         if self.hand_config.preset_actions:
             buttons = []
-            for idx, (name, positions) in enumerate(self.hand_config.preset_actions.items()):
+            for name, positions in self.hand_config.preset_actions.items():
                 button = QPushButton(name)
                 button.setProperty("category", "preset")
                 button.clicked.connect(

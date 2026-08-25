@@ -105,18 +105,17 @@ class LinkerHandL7RS485:
                 count=count, 
                 slave=self.slave
             )
-            
-            # 使用 L10 参考中验证过的 3.x 兼容错误检查
-            if rsp.isError():
-                raise RuntimeError(f"Modbus FC04 读取失败。地址: {address}, 错误: {rsp}")
-                
-            return rsp.registers
-            
         except ModbusException as e:
             # 捕获通信超时、CRC 错误等 Modbus 异常
-            raise RuntimeError(f"Modbus 通信异常。地址: {address}, 错误: {e}")
+            raise RuntimeError(f"Modbus 通信异常。地址: {address}, 错误: {e}") from e
         except Exception as e:
-            raise RuntimeError(f"未知读取异常。地址: {address}, 错误: {e}")
+            raise RuntimeError(f"未知读取异常。地址: {address}, 错误: {e}") from e
+
+        # 使用 L10 参考中验证过的 3.x 兼容错误检查
+        if rsp.isError():
+            raise RuntimeError(f"Modbus FC04 读取失败。地址: {address}, 错误: {rsp}")
+
+        return rsp.registers
 
     def _write_holding_registers(self, address: int, values: List[int]):
         """封装 Modbus 写入保持寄存器 (FC 16) 操作。"""
@@ -138,14 +137,13 @@ class LinkerHandL7RS485:
                 values=values, 
                 slave=self.slave
             )
-            
-            if rsp.isError():
-                raise RuntimeError(f"Modbus FC16 写入失败。地址: {address}, 错误: {rsp}")
-                
         except ModbusException as e:
-            raise RuntimeError(f"Modbus 通信异常。地址: {address}, 错误: {e}")
+            raise RuntimeError(f"Modbus 通信异常。地址: {address}, 错误: {e}") from e
         except Exception as e:
-            raise RuntimeError(f"未知写入异常。地址: {address}, 错误: {e}")
+            raise RuntimeError(f"未知写入异常。地址: {address}, 错误: {e}") from e
+
+        if rsp.isError():
+            raise RuntimeError(f"Modbus FC16 写入失败。地址: {address}, 错误: {rsp}")
 
     # --------------------------------------------------
     # 读操作 (Read API)
@@ -264,10 +262,16 @@ class LinkerHandL7RS485:
             raise ValueError(f"需要 {_JOINT_COUNT} 个关节速度值，提供了 {len(speeds)} 个。")
         self._write_holding_registers(HR_ADDR["Speed_Start"], speeds)
     
-    def set_speed(self, speed:List[int] = [200] * 7):
+    def set_speed(self, speed:List[int] = None):
+        if speed is None:
+            speed = [200] * 7
+
         self.set_speeds(speed)
 
-    def set_torque(self, torque: List[int] = [250] * 7):
+    def set_torque(self, torque: List[int] = None):
+        if torque is None:
+            torque = [250] * 7
+
         self.set_torques(torque)
 
     def set_current(self, current=None):

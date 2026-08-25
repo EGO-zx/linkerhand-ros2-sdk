@@ -120,7 +120,12 @@ class LinkerHandAdvancedL6(Node):
             return False
         return any(abs(self.last_hand_post_cmd - pose) >= 3 for self.last_hand_post_cmd, pose in zip(self.last_hand_post_cmd, pose))
     
-    def joint_state_msg(self, pose,vel=[],eff=[]):
+    def joint_state_msg(self, pose,vel=None,eff=None):
+        if vel is None:
+            vel = []
+        if eff is None:
+            eff = []
+
         joint_state = JointState()
         joint_state.header = Header()
         joint_state.header.stamp = self.get_clock().now().to_msg()

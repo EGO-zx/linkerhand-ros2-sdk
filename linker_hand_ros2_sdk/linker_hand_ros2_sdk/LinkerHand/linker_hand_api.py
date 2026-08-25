@@ -97,12 +97,14 @@ class LinkerHandApi:
         
     
     # Five-finger movement
-    def finger_move(self, pose=[]):
+    def finger_move(self, pose=None):
         '''
         Five-finger movement
         @params: pose list L7 len(7) | L10 len(10) | L20 len(20) | L25 len(25) 0~255
         '''
-        
+        if pose is None:
+            pose = []
+
         if len(pose) == 0:
             return
         pose = [int(v) for v in pose]
@@ -144,8 +146,11 @@ class LinkerHandApi:
         self.hand.get_approach_inc()
     
 
-    def set_speed(self, speed=[100]*5):
+    def set_speed(self, speed=None):
         '''# Set speed'''
+        if speed is None:
+            speed = [100] * 5
+
         has_non_int = any(not isinstance(x, (int, float)) or x < 0 or x > 255 for x in speed)
         if has_non_int:
             print("Set Speed The numerical range can only be positive integers or floating-point numbers between 0 and 255", flush=True)
@@ -159,8 +164,11 @@ class LinkerHandApi:
         ColorMsg(msg=f"{self.hand_type} {self.hand_joint} set speed to {speed}", color="green")
         self.hand.set_speed(speed=speed)
     
-    def set_joint_speed(self, speed=[100]*5):
+    def set_joint_speed(self, speed=None):
         '''Set speed by topic'''
+        if speed is None:
+            speed = [100] * 5
+
         if len(speed) == 0:
             return
         if any(not isinstance(x, (int, float)) or x < 10 or x > 255 for x in speed):
@@ -168,8 +176,11 @@ class LinkerHandApi:
             return
         self.hand.set_speed(speed=speed)
     
-    def set_torque(self, torque=[180] * 5):
+    def set_torque(self, torque=None):
         '''Set maximum torque'''
+        if torque is None:
+            torque = [180] * 5
+
         has_non_int = any(not isinstance(x, (int, float)) or x < 0 or x > 255 for x in torque)
         if has_non_int:
             print("Set Torque The numerical range can only be positive integers or floating-point numbers between 0 and 255", flush=True)
@@ -187,8 +198,11 @@ class LinkerHandApi:
         return self.hand.set_torque(torque=torque)
     
     
-    def set_current(self, current=[250] * 5):
+    def set_current(self, current=None):
         '''Set current L7/L10/L25 not supported'''
+        if current is None:
+            current = [250] * 5
+
         if any(not isinstance(x, (int, float)) or x < 0 or x > 255 for x in current):
             print("Set Current The numerical range can only be positive integers or floating-point numbers between 0 and 255", flush=True)
             return

@@ -146,13 +146,12 @@ class LinkerHand(Node):
         elif self.hand_joint == "L25":
             pose = [75, 255, 255, 255, 255, 176, 97, 81, 114, 147, 202, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]
         if pose is not None:
-            for i in range(1): 
-                self.api.set_speed(speed=speed)
-                time.sleep(0.1)
-                self.api.set_torque(torque=torque)
-                time.sleep(0.1)
-                self.api.finger_move(pose=pose)
-                time.sleep(0.1)
+            self.api.set_speed(speed=speed)
+            time.sleep(0.1)
+            self.api.set_torque(torque=torque)
+            time.sleep(0.1)
+            self.api.finger_move(pose=pose)
+            time.sleep(0.1)
 
     def list_check(self,pose):
         if not isinstance(pose, list):
@@ -330,7 +329,10 @@ class LinkerHand(Node):
         msg.data = json.dumps(self.matrix_dic)
         self.matrix_touch_pub.publish(msg)
 
-    def joint_state_msg(self, pose,vel=[]):
+    def joint_state_msg(self, pose,vel=None):
+        if vel is None:
+            vel = []
+
         joint_state = JointState()
         joint_state.header = Header()
         joint_state.header.stamp = self.get_clock().now().to_msg()

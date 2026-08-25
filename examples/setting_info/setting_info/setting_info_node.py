@@ -49,7 +49,10 @@ class SettingInfoNode(Node):
         
 
     # 设置速度
-    def set_speed(self, speed=[91] * 10):
+    def set_speed(self, speed=None):
+        if speed is None:
+            speed = [91] * 10
+
         cmd_dic = {
             "setting_cmd": "set_speed",
             "params":{
@@ -60,7 +63,10 @@ class SettingInfoNode(Node):
         self.pub_msg(cmd_dic=cmd_dic)
 
     # 设置扭矩
-    def set_max_torque_limits(self, torque=[100] * 5):
+    def set_max_torque_limits(self, torque=None):
+        if torque is None:
+            torque = [100] * 5
+
         cmd_dic = {
             "setting_cmd": "set_max_torque_limits",
             "params":{

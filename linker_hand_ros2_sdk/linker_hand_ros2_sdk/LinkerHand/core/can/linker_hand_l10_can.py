@@ -176,19 +176,23 @@ class LinkerHandL10Can:
         #self.send_frame(FrameProperty.MAX_PRESS_RCO, self.pressures)
         
         
-    def set_joint_speed_l10(self,speed=[180]*5):
+    def set_joint_speed_l10(self,speed=None):
+        if speed is None:
+            speed = [180] * 5
         self.x05 = speed
-        for i in range(2):
+        for _ in range(2):
             time.sleep(0.01)
             self.send_frame(0x05, speed)
-    def set_speed(self,speed=[180]*5):
+    def set_speed(self,speed=None):
+        if speed is None:
+            speed = [180] * 5
         if len(speed) == 5:
             self.x05 = speed
-            for i in range(2):
+            for _ in range(2):
                 time.sleep(0.01)
                 self.send_frame(0x05, speed)
         elif len(speed) == 10:
-            for i in range(2):
+            for _ in range(2):
                 time.sleep(0.01)
                 self.send_frame(0x05, speed[:5])
                 self.send_frame(0x06, speed[5:])
@@ -331,8 +335,10 @@ class LinkerHandL10Can:
             time.sleep(0.1)
         return self.version
 
-    def set_torque(self,torque=[]):
+    def set_torque(self,torque=None):
         '''Set maximum torque'''
+        if torque is None:
+            torque = []
         if len(torque) == 5:
             self.send_frame(0x02, torque)
             time.sleep(0.002)
@@ -378,7 +384,7 @@ class LinkerHandL10Can:
         self.send_frame(0xb0,[],sleep=0.03)
         self.send_frame(0xb1,[],sleep=0.03)
         t = []
-        for i in range(3):
+        for _ in range(3):
             t = self.xb1
             time.sleep(0.01)
         if len(t) == 2:
@@ -491,8 +497,10 @@ class LinkerHandL10Can:
         return ["thumb_cmc_pitch", "thumb_cmc_yaw", "index_mcp_pitch", "middle_mcp_pitch", "ring_mcp_pitch", "pinky_mcp_pitch",
                         "index_mcp_roll", "ring_mcp_roll", "pinky_mcp_roll", "thumb_cmc_roll"]
 
-    def clear_faults(self, finger_mask=[1, 1, 1, 1, 1]):
+    def clear_faults(self, finger_mask=None):
         """L10 暂不支持清除故障码"""
+        if finger_mask is None:
+            finger_mask = [1, 1, 1, 1, 1]
         pass
 
     def show_fun_table(self):

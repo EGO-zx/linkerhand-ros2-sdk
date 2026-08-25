@@ -272,7 +272,7 @@ class LinkerHandL20RS485:
             rsp = self.cli.read_input_registers(
                 address=address, count=count, slave=self.slave)
         except ModbusException as e:
-            raise RuntimeError(f"FC04 通信异常, 地址 {address}, 数量 {count}: {e}")
+            raise RuntimeError(f"FC04 通信异常, 地址 {address}, 数量 {count}: {e}") from e
         if rsp.isError():
             raise RuntimeError(
                 f"FC04 读取失败, 地址 {address}, 数量 {count}: {self._describe(rsp)}")
@@ -286,7 +286,7 @@ class LinkerHandL20RS485:
             rsp = self.cli.read_holding_registers(
                 address=address, count=count, slave=self.slave)
         except ModbusException as e:
-            raise RuntimeError(f"FC03 通信异常, 地址 {address}, 数量 {count}: {e}")
+            raise RuntimeError(f"FC03 通信异常, 地址 {address}, 数量 {count}: {e}") from e
         if rsp.isError():
             raise RuntimeError(
                 f"FC03 读取失败, 地址 {address}, 数量 {count}: {self._describe(rsp)}")
@@ -307,7 +307,7 @@ class LinkerHandL20RS485:
                 rsp = self.cli.write_registers(
                     address=address, values=values, slave=self.slave)
         except ModbusException as e:
-            raise RuntimeError(f"写入通信异常, 地址 {address}: {e}")
+            raise RuntimeError(f"写入通信异常, 地址 {address}: {e}") from e
         if rsp.isError():
             raise RuntimeError(
                 f"写入失败, 地址 {address}, 数量 {len(values)}: {self._describe(rsp)}")

@@ -719,8 +719,10 @@ class LinkerHandG20Can:
         """设置所有手指指根3关节位置"""
         self.send_command(FrameProperty.ROOT3_POS, joint_ranges)
     
-    def set_tip_positions(self, joint_ranges=[80]*5):
+    def set_tip_positions(self, joint_ranges=None):
         """设置所有手指指尖关节位置"""
+        if joint_ranges is None:
+            joint_ranges = [80] * 5
         self.send_command(FrameProperty.TIP_POS, joint_ranges)
 
     # 串联控制指令方法
@@ -912,8 +914,10 @@ class LinkerHandG20Can:
         """设置手指输出扭矩"""
         self.send_command(FrameProperty.FINGER_TORQUE, torque_values)
     
-    def clear_finger_faults(self, finger_mask=[1, 1, 1, 1, 1]):
+    def clear_finger_faults(self, finger_mask=None):
         """清除手指故障及故障码"""
+        if finger_mask is None:
+            finger_mask = [1, 1, 1, 1, 1]
         self.send_command(FrameProperty.FINGER_FAULT, finger_mask)
         return self.x83
     
@@ -1057,16 +1061,20 @@ class LinkerHandG20Can:
         self.set_ring_positions(j[3])
         self.set_little_positions(j[4])
 
-    def set_speed(self, speed=[250] * 5):
+    def set_speed(self, speed=None):
         """API接口:设置手指速度"""
+        if speed is None:
+            speed = [250] * 5
         self.set_thumb_speed(speed_values=[speed[0]] * 6)
         self.set_index_speed(speed_values=[speed[1]] * 6)
         self.set_middle_speed(speed_values=[speed[2]] * 6)
         self.set_ring_speed(speed_values=[speed[3]] * 6)
         self.set_little_speed(speed_values=[speed[4]] * 6)
 
-    def set_torque(self, torque=[250] * 5):
+    def set_torque(self, torque=None):
         """API接口:设置手指最大扭矩"""
+        if torque is None:
+            torque = [250] * 5
         self.set_thumb_torque(torque_values=[torque[0]] * 6)
         self.set_index_torque(torque_values=[torque[1]] * 6)
         self.set_middle_torque(torque_values=[torque[2]] * 6)
@@ -1112,7 +1120,7 @@ class LinkerHandG20Can:
         self.send_command(0xb0,[],sleep_time=0.03)
         self.send_command(0xb1,[],sleep_time=0.03)
         t = []
-        for i in range(3):
+        for _ in range(3):
             t = self.xB1
             time.sleep(0.01)
         if len(t) == 2:
@@ -1251,7 +1259,7 @@ class LinkerHandG20Can:
         
         result = []
         
-        for finger, indices in finger_mapping.items():
+        for indices in finger_mapping.values():
             finger_data = [cmd_list[i] for i in indices]
             result.append(finger_data)
         

@@ -577,8 +577,8 @@ class LinkerHandO6RS485:
         # 允许传入 float/numpy int 等可转换为 int 的类型
         try:
             pitch_int = int(pitch)
-        except (ValueError, TypeError):
-             raise ValueError("Pitch value must be a number convertible to int (0-255)")
+        except (ValueError, TypeError) as exc:
+            raise ValueError("Pitch value must be a number convertible to int (0-255)") from exc
 
         if not 0 <= pitch_int <= 255:
             raise ValueError("Pitch value must be 0-255")

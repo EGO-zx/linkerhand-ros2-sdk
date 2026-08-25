@@ -211,28 +211,44 @@ class LinkerHandL24Can:
     def set_root3_positions(self, joint_ranges):
         self.send_command(FrameProperty.ROOT3_POS, joint_ranges)
     # 设置所有手指指尖关节位置
-    def set_tip_positions(self, joint_ranges=[80]*5):
+    def set_tip_positions(self, joint_ranges=None):
+        if joint_ranges is None:
+            joint_ranges = [80] * 5
         self.send_command(FrameProperty.TIP_POS, joint_ranges)
     # 获取大拇指指关节位置
-    def get_thumb_positions(self,j=[0]):
+    def get_thumb_positions(self,j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.THUMB_POS, j)
     # 获取食指关节位置
-    def get_index_positions(self, j=[0]):
+    def get_index_positions(self, j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.INDEX_POS,j)
     # 获取中指关节位置
-    def get_middle_positions(self, j=[0]):
+    def get_middle_positions(self, j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.MIDDLE_POS,j)
     # 获取无名指关节位置
-    def get_ring_positions(self, j=[0]):
+    def get_ring_positions(self, j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.RING_POS,j)
     # 获取小拇指关节位置
-    def get_little_positions(self, j=[0]):
+    def get_little_positions(self, j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.LITTLE_POS, j)
     # 失能01模式
-    def set_disability_mode(self, j=[1,1,1,1,1]):
+    def set_disability_mode(self, j=None):
+        if j is None:
+            j = [1, 1, 1, 1, 1]
         self.send_command(0x85,j)
     # 使能00模式
-    def set_enable_mode(self, j=[00,00,00,00,00]):
+    def set_enable_mode(self, j=None):
+        if j is None:
+            j = [0, 0, 0, 0, 0]
         self.send_command(0x85,j)
 
     
@@ -392,8 +408,10 @@ class LinkerHandL24Can:
     # def get_fault(self):
     #     return self.x07
 
-    def clear_faults(self, finger_mask=[1, 1, 1, 1, 1]):
+    def clear_faults(self, finger_mask=None):
         """L24 暂不支持清除故障码"""
+        if finger_mask is None:
+            finger_mask = [1, 1, 1, 1, 1]
         pass
     
     def close_can_interface(self):

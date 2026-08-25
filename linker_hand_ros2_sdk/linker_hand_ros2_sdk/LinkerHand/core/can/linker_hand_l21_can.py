@@ -265,7 +265,7 @@ class LinkerHandL21Can:
             l21_pose = self.joint_map(joint_ranges)
             # Use list comprehension to split the list into subarrays of 6 elements each
             chunks = [l21_pose[i:i+6] for i in range(0, 30, 6)]
-            for i in range(3):
+            for _ in range(3):
                 self.send_command(FrameProperty.THUMB_POS, chunks[0])
                 time.sleep(0.001)
                 self.send_command(FrameProperty.INDEX_POS, chunks[1])
@@ -335,79 +335,127 @@ class LinkerHandL21Can:
     def set_root3_positions(self, joint_ranges):
         self.send_command(FrameProperty.ROOT3_POS, joint_ranges)
     # Set all finger tip joint positions
-    def set_tip_positions(self, joint_ranges=[80]*5):
+    def set_tip_positions(self, joint_ranges=None):
+        if joint_ranges is None:
+            joint_ranges = [80] * 5
         self.send_command(FrameProperty.TIP_POS, joint_ranges)
     # Set thumb torque
-    def set_thumb_torque(self, j=[]):
+    def set_thumb_torque(self, j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.THUMB_TORQUE, j)
     # Set index finger torque
-    def set_index_torque(self, j=[]):
+    def set_index_torque(self, j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.INDEX_TORQUE, j)
     # Set middle finger torque
-    def set_middle_torque(self, j=[]):
+    def set_middle_torque(self, j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.MIDDLE_TORQUE, j)
     # Set ring finger torque
-    def set_ring_torque(self, j=[]):
+    def set_ring_torque(self, j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.RING_TORQUE, j)
     # Set little finger torque
-    def set_little_torque(self, j=[]):
+    def set_little_torque(self, j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.LITTLE_TORQUE, j)
 
     # Get thumb joint positions
-    def get_thumb_positions(self,j=[0]):
+    def get_thumb_positions(self,j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.THUMB_POS, j)
     # Get index finger joint positions
-    def get_index_positions(self, j=[0]):
+    def get_index_positions(self, j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.INDEX_POS,j)
     # Get middle finger joint positions
-    def get_middle_positions(self, j=[0]):
+    def get_middle_positions(self, j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.MIDDLE_POS,j)
     # Get ring finger joint positions
-    def get_ring_positions(self, j=[0]):
+    def get_ring_positions(self, j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.RING_POS,j)
     # Get little finger joint positions
-    def get_little_positions(self, j=[0]):
+    def get_little_positions(self, j=None):
+        if j is None:
+            j = [0]
         self.send_command(FrameProperty.LITTLE_POS, j)
     # Get all thumb motor fault codes
-    def get_thumbn_fault(self,j=[]):
+    def get_thumbn_fault(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.THUMB_FAULT,j)
     # Get all index finger motor fault codes
-    def get_index_fault(self,j=[]):
+    def get_index_fault(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.INDEX_FAULT,j)
     # Get all middle finger motor fault codes
-    def get_middle_fault(self,j=[]):
+    def get_middle_fault(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.MIDDLE_FAULT,j)
     # Get all ring finger motor fault codes
-    def get_ring_fault(self,j=[]):
+    def get_ring_fault(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.RING_FAULT,j)
     # Get all little finger motor fault codes
-    def get_little_fault(self,j=[]):
+    def get_little_fault(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.LITTLE_FAULT,j)
     # Get thumb temperature threshold
-    def get_thumb_threshold(self,j=[]):
+    def get_thumb_threshold(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.THUMB_TEMPERATURE, '')
     # Get index finger temperature threshold
-    def get_index_threshold(self,j=[]):
+    def get_index_threshold(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.INDEX_TEMPERATURE, j)
     # Get middle finger temperature threshold
-    def get_middle_threshold(self,j=[]):
+    def get_middle_threshold(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.MIDDLE_TEMPERATURE, j)
     # Get ring finger temperature threshold
-    def get_ring_threshold(self,j=[]):
+    def get_ring_threshold(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.RING_TEMPERATURE, j)
     # Get little finger temperature threshold
-    def get_little_threshold(self,j=[]):
+    def get_little_threshold(self,j=None):
+        if j is None:
+            j = []
         self.send_command(FrameProperty.LITTLE_TEMPERATURE, j)
 
     # Disable mode 01
-    def set_disability_mode(self, j=[1,1,1,1,1]):
+    def set_disability_mode(self, j=None):
+        if j is None:
+            j = [1, 1, 1, 1, 1]
         self.send_command(0x85,j)
     # Enable mode 00
-    def set_enable_mode(self, j=[00,00,00,00,00]):
+    def set_enable_mode(self, j=None):
+        if j is None:
+            j = [0, 0, 0, 0, 0]
         self.send_command(0x85,j)
     
     # Set all finger torques
-    def set_torque(self,torque=[250]*5):
+    def set_torque(self,torque=None):
+        if torque is None:
+            torque = [250] * 5
         t = torque[0]
         i = torque[1]
         m = torque[2]
