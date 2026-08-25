@@ -31,9 +31,11 @@ log/
 .vscode/
 .idea/
 *.swp
-*.bak
-*.ttk
 
 # 系统文件
 .DS_Store
 Thumbs.db
+
+# 其他
+.bak
+.ttk
