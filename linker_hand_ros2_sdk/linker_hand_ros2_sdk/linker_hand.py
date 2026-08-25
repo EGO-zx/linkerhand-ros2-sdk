@@ -12,7 +12,7 @@ from rclpy.node import Node                      # ROS2 节点类
 from rclpy.clock import Clock
 from std_msgs.msg import String, Header, Float32MultiArray
 from sensor_msgs.msg import JointState, PointCloud2, PointField
-import time, json, threading
+import json, threading
 from linker_hand_ros2_sdk.LinkerHand.linker_hand_api import LinkerHandApi
 from linker_hand_ros2_sdk.LinkerHand.utils.color_msg import ColorMsg
 from linker_hand_ros2_sdk.LinkerHand.utils.open_can import OpenCan
@@ -370,12 +370,12 @@ class LinkerHand(Node):
                     speed = data["params"]["speed"]
                     hand.set_speed(speed=speed)
                 else:
-                    ColorMsg(msg=f"Speed parameter error, speed must be a list", color="red")
+                    ColorMsg(msg="Speed parameter error, speed must be a list", color="red")
             if data["setting_cmd"] == "clear_faults": # Clear faults
                 if hand_left == True and self.hand_joint == "L10" :
-                    ColorMsg(msg=f"L10 left hand cannot clear faults")
+                    ColorMsg(msg="L10 left hand cannot clear faults")
                 elif hand_right == True and self.hand_joint == "L10" :
-                    ColorMsg(msg=f"L10 right hand cannot clear faults")
+                    ColorMsg(msg="L10 right hand cannot clear faults")
                 else:
                     hand.clear_faults()
             if data["setting_cmd"] == "get_faults": # Get faults
@@ -406,16 +406,16 @@ def main(args=None):
         node = LinkerHand("linker_hand_sdk")
         embedded_version = node.embedded_version
         if len(embedded_version) == 3 or node.hand_joint.upper() == "O6" or node.hand_joint.upper() == "L6" or node.hand_joint.upper() == "G20":
-            ColorMsg(msg=f"New Matrix Touch For SDK V2", color="green")
+            ColorMsg(msg="New Matrix Touch For SDK V2", color="green")
             node.sdk_v = 2
         elif len(embedded_version) == 6 and node.hand_joint == "L10":
-            ColorMsg(msg=f"New Matrix Touch For SDK V2", color="green")
+            ColorMsg(msg="New Matrix Touch For SDK V2", color="green")
             node.sdk_v = 2
         elif len(embedded_version) > 4 and ((embedded_version[0]==10 and embedded_version[4]>35) or (embedded_version[0]==7 and embedded_version[4]>50) or (embedded_version[0] == 6)):
-            ColorMsg(msg=f"New Matrix Touch For SDK V2", color="green")
+            ColorMsg(msg="New Matrix Touch For SDK V2", color="green")
             node.sdk_v = 2
         else:
-            ColorMsg(msg=f"SDK V1", color="green")
+            ColorMsg(msg="SDK V1", color="green")
             node.sdk_v = 1
         rclpy.spin(node)         # 主循环，监听 ROS 回调
     except KeyboardInterrupt:

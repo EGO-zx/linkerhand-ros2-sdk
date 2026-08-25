@@ -404,7 +404,6 @@ class LinkerHandL20Can:
 
     def get_touch_type(self):
         '''Get touch type'''
-        t = []
         for i in range(3):
             self.send_command(0xb0,[],sleep=0.03)
         if self.xb0 == [2]:

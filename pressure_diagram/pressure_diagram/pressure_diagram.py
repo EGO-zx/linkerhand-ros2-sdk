@@ -590,7 +590,7 @@ class PressureDiagram(Node, QtWidgets.QMainWindow):
                     self.palm_wave_neg_streak = 0
             else:
                 self.palm_wave_present = False
-        except Exception as e:
+        except Exception:
             pass
 
     def matrix_callback(self, msg):

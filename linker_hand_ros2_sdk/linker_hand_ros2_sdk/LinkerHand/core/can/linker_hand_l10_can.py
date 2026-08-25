@@ -519,7 +519,7 @@ class LinkerHandL10Can:
         }
         
         #return [data[0],data[1],data[2],chr(data[3]),f"V{data[4] >> 4}.{data[4] & 0x0F}",f"V{data[5] >> 4}.{data[5] & 0x0F}",data[6]]
-        table = [[k, v] for k, v in result.items()]
+        _table = [[k, v] for k, v in result.items()]
         #print(tabulate(table, tablefmt="grid"), flush=True)
 
 

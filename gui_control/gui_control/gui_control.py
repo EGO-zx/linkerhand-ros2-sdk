@@ -63,9 +63,9 @@ class ROS2NodeManager(QObject):
             )
                     # 新增 speed / torque 发布者
             self.speed_pub = self.node.create_publisher(
-                String, f'/cb_hand_setting_cmd', 10)
+                String, '/cb_hand_setting_cmd', 10)
             self.torque_pub = self.node.create_publisher(
-                String, f'/cb_hand_setting_cmd', 10)
+                String, '/cb_hand_setting_cmd', 10)
             self.status_updated.emit("info", f"ROS2节点初始化成功: {self.hand_type} {self.hand_joint}")
             
             # 启动ROS2自旋线程

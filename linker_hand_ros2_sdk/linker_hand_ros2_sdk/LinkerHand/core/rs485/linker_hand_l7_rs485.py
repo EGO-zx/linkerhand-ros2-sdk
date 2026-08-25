@@ -412,7 +412,7 @@ if __name__ == "__main__":
             # --- 3. 压力传感器读取示例 ---
             print("\n--- 3. 压力传感器读取 (大拇指 1) ---")
             thumb_matrix = hand.get_pressure_matrix(finger_id=1)
-            print(f"大拇指压力矩阵 (12x6):")
+            print("大拇指压力矩阵 (12x6):")
             print(thumb_matrix)
             
     except ConnectionError as e:

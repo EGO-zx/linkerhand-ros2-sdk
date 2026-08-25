@@ -42,9 +42,9 @@ class OpenCan:
                 capture_output=True
             )
             
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             pass
-        except Exception as e:
+        except Exception:
             pass
     def open_can(self,can="can0"):
         try:
@@ -65,9 +65,9 @@ class OpenCan:
                 text=True,
                 capture_output=True
             )
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             pass
-        except Exception as e:
+        except Exception:
             pass
             
 
@@ -113,7 +113,7 @@ class OpenCan:
         except Exception as e:
             print(f"Unexpected error: {e}")
             return False
-    
+
     def close_can(self,can="can0"):
         try:
             # 检查 can0 接口是否存在
@@ -142,4 +142,3 @@ class OpenCan:
         except Exception as e:
             print(f"Unexpected error: {e}")
             return False
-    

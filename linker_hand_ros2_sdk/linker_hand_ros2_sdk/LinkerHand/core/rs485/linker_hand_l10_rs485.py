@@ -72,8 +72,6 @@ class LinkerHandL10RS485:
         rsp = self.cli.read_input_registers(address=158, count=6, slave=self.slave)
         if rsp.isError():
             raise RuntimeError(f"read_versions failed: {rsp}")
-        keys = ["hand_freedom", "hand_version", "hand_number",
-                "hand_direction", "software_version", "hardware_version"]
         #return dict(zip(keys, rsp.registers))
         return rsp.registers
 

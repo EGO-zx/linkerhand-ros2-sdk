@@ -498,8 +498,7 @@ class LinkerHandO6RS485:
         """
         rows = 10      # 10行
         cols = 4       # 4列
-        finger_size = rows * cols  # 40个数据点
-        
+
         # modbus 地址 (按O6协议文档)
         write_address = 18   # 写入手指选择 (保持寄存器)
         read_address = 47    # 读取压力数据 (输入寄存器)

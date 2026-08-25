@@ -97,7 +97,7 @@ class LinkerHandApi:
             return
         pose = [int(v) for v in pose]
         if any(not isinstance(x, (int, float)) or x < 0 or x > 255 for x in pose):
-            ColorMsg(msg=f"The numerical range cannot be less than 0 or greater than 255",color="red")
+            ColorMsg(msg="The numerical range cannot be less than 0 or greater than 255",color="red")
             return
         if (self.hand_joint.upper() == "O6" or self.hand_joint.upper() == "L6") and len(pose) == 6:
             self.hand.set_joint_positions(pose)
@@ -154,7 +154,7 @@ class LinkerHandApi:
         if len(speed) == 0:
             return
         if any(not isinstance(x, (int, float)) or x < 10 or x > 255 for x in speed):
-            ColorMsg(msg=f"The numerical range cannot be less than 10 or greater than 255",color="red")
+            ColorMsg(msg="The numerical range cannot be less than 10 or greater than 255",color="red")
             return
         self.hand.set_speed(speed=speed)
     

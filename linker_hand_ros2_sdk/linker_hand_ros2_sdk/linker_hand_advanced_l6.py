@@ -13,7 +13,7 @@ from rclpy.node import Node                      # ROS2 节点类
 from rclpy.clock import Clock
 from std_msgs.msg import String, Header, Float32MultiArray
 from sensor_msgs.msg import JointState, PointCloud2, PointField
-import time, json, threading
+import json, threading
 from linker_hand_ros2_sdk.LinkerHand.linker_hand_api import LinkerHandApi
 from linker_hand_ros2_sdk.LinkerHand.utils.color_msg import ColorMsg
 from linker_hand_ros2_sdk.LinkerHand.utils.open_can import OpenCan
@@ -68,10 +68,10 @@ class LinkerHandAdvancedL6(Node):
 
     def _check_linker_hand_type(self):
         if self.modbus != "None":
-            ColorMsg(msg=f"Modbus暂不支持", color="red")
+            ColorMsg(msg="Modbus暂不支持", color="red")
             sys.exit(0)
         if self.hand_joint.upper() != "L6":
-            ColorMsg(msg=f"L6以外其他Linker Hand暂不支持", color="red")
+            ColorMsg(msg="L6以外其他Linker Hand暂不支持", color="red")
             sys.exit(0)
 
     def _init_hand(self):
