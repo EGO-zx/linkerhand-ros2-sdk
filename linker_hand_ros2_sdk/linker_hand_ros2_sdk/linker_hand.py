@@ -394,7 +394,7 @@ class LinkerHand(Node):
                     hand.set_current(data["params"]["current"])
             if data["setting_cmd"] == "show_fun_table": # Get faults
                 f = hand.show_fun_table()
-        except (json.JSONDecodeError, KeyError, TypeError):
+        except Exception:
             print("命令参数错误")
             self.cmd_lock = False
         finally:
