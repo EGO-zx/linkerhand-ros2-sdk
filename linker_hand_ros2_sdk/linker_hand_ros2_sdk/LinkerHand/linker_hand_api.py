@@ -42,7 +42,24 @@ class LinkerHandApi:
         if self.hand_joint == "L6":
             if modbus != "None":
                 from core.rs485.linker_hand_l6_rs485 import LinkerHandL6RS485
-                self.hand = LinkerHandL6RS485(hand_id=self.hand_id,modbus_port=modbus,baudrate=115200)
+                # 协议规定 921600，先试它；部分早期固件为 115200 再回退。
+                # 探测失败必须 close，否则残留的句柄和缓冲字节会让下一次探测也失败。
+                self.hand = None
+                for baudrate in (921600, 115200):
+                    hand = None
+                    try:
+                        hand = LinkerHandL6RS485(hand_id=self.hand_id,modbus_port=modbus,baudrate=baudrate)
+                        hand.get_version()
+                    except Exception as e:
+                        if hand is not None:
+                            hand.close()
+                        ColorMsg(msg=f"L6 baudrate {baudrate} failed: {e}", color="yellow")
+                        continue
+                    self.hand = hand
+                    ColorMsg(msg=f"L6 RS485 baudrate: {baudrate}", color="green")
+                    break
+                if self.hand is None:
+                    raise ConnectionError(f"L6 RS485 communication failed on {modbus} (tried 921600/115200)")
             else:
                 from core.can.linker_hand_l6_can import LinkerHandL6Can
                 self.hand = LinkerHandL6Can(can_id=self.hand_id,can_channel=self.can, yaml=self.yaml)
