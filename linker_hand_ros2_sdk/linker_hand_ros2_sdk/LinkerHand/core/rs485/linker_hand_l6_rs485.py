@@ -5,31 +5,33 @@ from typing import Dict, List
 import numpy as np
 from pymodbus.client import ModbusSerialClient
 
-_INTERVAL = 0.006  # 8 ms
+_INTERVAL = 0.01  # 8 ms
+_RETRIES = 3      # 单帧失败后的重试次数
+_RETRY_GAP = 0.02 # 重试前的等待
 
 class LinkerHandL6RS485:
     """L6机械手 Modbus-RTU 控制类"""
-    
+
     # 6个关节名称
-    JOINT_NAMES = ["thumb_pitch", "thumb_yaw", "index_pitch", 
+    JOINT_NAMES = ["thumb_pitch", "thumb_yaw", "index_pitch",
                    "middle_pitch", "ring_pitch", "little_pitch"]
-    
+
     # 手指名称
     FINGER_NAMES = ["thumb", "index", "middle", "ring", "little"]
-    
+
     def __init__(self, hand_id=0x27, modbus_port="/dev/ttyUSB0", baudrate=115200):
         """
         初始化L6机械手
         hand_id: 右手0x27(39), 左手0x28(40)
         modbus_port: 串口设备路径
-        baudrate: 波特率，固定115200
+        baudrate: 协议规定 921600，部分早期固件为 115200
         """
         self.slave = hand_id
         self.cli = ModbusSerialClient(
-            port=modbus_port, 
+            port=modbus_port,
             baudrate=baudrate,
-            bytesize=8, 
-            parity="N", 
+            bytesize=8,
+            parity="N",
             stopbits=1,
             timeout=0.05
         )
@@ -37,28 +39,56 @@ class LinkerHandL6RS485:
         self.connected = self.cli.connect()
         if not self.connected:
             raise ConnectionError(f"RS485连接失败，端口: {modbus_port}")
+        # 上一个进程或上一次波特率探测可能在缓冲区留下残留字节，
+        # 不清掉会被当成本次请求的应答，导致首帧 CRC/帧错误
+        self._flush()
+
+    def _flush(self):
+        """清空串口收发缓冲"""
+        sock = getattr(self.cli, "socket", None)
+        if sock is None:
+            return
+        try:
+            sock.reset_input_buffer()
+            sock.reset_output_buffer()
+        except Exception:
+            pass
+
+    def _request(self, what: str, fn, **kwargs):
+        """执行一次 Modbus 请求，失败则清缓冲后重试 _RETRIES 次"""
+        last = None
+        for attempt in range(_RETRIES):
+            time.sleep(_INTERVAL)
+            try:
+                result = fn(slave=self.slave, **kwargs)
+            except Exception as e:
+                last = e
+            else:
+                if not result.isError():
+                    return result
+                last = result
+            self._flush()
+            time.sleep(_RETRY_GAP)
+        raise RuntimeError(f"{what}失败(重试{_RETRIES}次): {last}")
 
     def _read_input_registers(self, address: int, count: int) -> List[int]:
         """读取输入寄存器"""
-        time.sleep(_INTERVAL)
-        result = self.cli.read_input_registers(address=address, count=count, slave=self.slave)
-        if result.isError():
-            raise RuntimeError(f"读取输入寄存器失败: address={address}, count={count}")
+        result = self._request(
+            f"读取输入寄存器 address={address}, count={count}",
+            self.cli.read_input_registers, address=address, count=count)
         return result.registers
 
     def _write_register(self, address: int, value: int):
         """写入单个寄存器"""
-        time.sleep(_INTERVAL)
-        result = self.cli.write_register(address=address, value=value, slave=self.slave)
-        if result.isError():
-            raise RuntimeError(f"写入寄存器失败: address={address}, value={value}")
+        self._request(
+            f"写入寄存器 address={address}, value={value}",
+            self.cli.write_register, address=address, value=value)
 
     def _write_registers(self, address: int, values: List[int]):
         """写入多个寄存器"""
-        time.sleep(_INTERVAL)
-        result = self.cli.write_registers(address=address, values=values, slave=self.slave)
-        if result.isError():
-            raise RuntimeError(f"写入多个寄存器失败: address={address}, values={values}")
+        self._request(
+            f"写入多个寄存器 address={address}, values={values}",
+            self.cli.write_registers, address=address, values=values)
 
     # --------------------------------------------------
     # 基础读取接口
@@ -192,20 +222,25 @@ class LinkerHandL6RS485:
     # 版本信息接口
     # --------------------------------------------------
     
-    def read_versions(self) -> Dict[str, int]:
-        """读取版本信息 (输入寄存器 148-155)"""
-        result = self._read_input_registers(148, 8)
-        
-        return {
-            "hand_freedom": result[0],
-            "hand_version": result[1],
-            "hand_number": result[2],
-            "hand_direction": result[3],
-            "software_version_major": result[4],
-            "software_version_minor": result[5] if len(result) > 5 else 0,
-            "software_version_revision": result[6] if len(result) > 6 else 0,
-            "hardware_version": result[7] if len(result) > 7 else 0
-        }
+    def read_versions(self) -> Dict[str, object]:
+        """读取版本信息 (输入寄存器 154-163)"""
+        try:
+            result = self._read_input_registers(154, 10)
+            if len(result) < 10:
+                raise RuntimeError(f"版本信息寄存器长度不足: 期望10个, 实际{len(result)}个")
+
+            return {
+                "hand_freedom": result[0],                  # 154 自由度
+                "hand_version": result[1],                  # 155 结构版本
+                "hand_number": list(result[2:5]),           # 156-158 序列号(3个寄存器)
+                "hand_direction": result[5],                # 159 手方向 L=76 R=82
+                "software_version_major": result[6],        # 160 嵌入式主版本号
+                "software_version_minor": result[7],        # 161 次版本号
+                "software_version_revision": result[8],     # 162 修订号
+                "hardware_version": result[9]               # 163 PCB版本号
+            }
+        except Exception as e:
+            raise RuntimeError(f"读取版本信息失败: {e}")
 
     # --------------------------------------------------
     # 写入接口
@@ -278,15 +313,16 @@ class LinkerHandL6RS485:
         print("当前L6不支持设置电流", flush=True)
 
     def get_version(self) -> list:
-        """获取版本信息"""
+        """获取版本信息 [自由度, 结构版本, 手方向, 嵌入式主版本, 次版本, 修订号, PCB版本]"""
         versions = self.read_versions()
         return [
-            versions.get("hand_freedom", 0),
-            versions.get("hand_version", 0),
-            versions.get("hand_number", 0),
-            versions.get("hand_direction", 0),
-            versions.get("software_version_major", 0),
-            versions.get("hardware_version", 0)
+            versions["hand_freedom"],
+            versions["hand_version"],
+            versions["hand_direction"],
+            versions["software_version_major"],
+            versions["software_version_minor"],
+            versions["software_version_revision"],
+            versions["hardware_version"]
         ]
 
     def get_current(self):
@@ -367,7 +403,8 @@ class LinkerHandL6RS485:
         return self.read_error_codes()
     
     def get_serial_number(self):
-        return [0] * 6
+        """获取序列号 (输入寄存器 156-158)"""
+        return self.read_versions()["hand_number"]
 
     def get_finger_order(self):
         return ["thumb_cmc_pitch", "thumb_cmc_yaw", "index_mcp_pitch", "middle_mcp_pitch", "ring_mcp_pitch", "pinky_mcp_pitch"]
@@ -383,6 +420,10 @@ class LinkerHandL6RS485:
     def fist(self):
         """所有手指握拳"""
         self.set_joint_positions([0] * 6)
+
+    def clear_faults(self):
+        pass
+
     
     def dump_status(self):
         """打印状态信息"""
