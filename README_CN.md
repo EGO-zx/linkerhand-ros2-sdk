@@ -3,7 +3,7 @@
 # LinkerHand灵巧手ROS2 SDK
 
 ## 概述
-LinkerHand灵巧手ROS SDK 是灵心巧手(北京)科技有限公司开发，用于O6、L6、L7、O7、L10、L20、G20、L21等LinkerHand灵巧手的驱动软件和功能示例源码。可用于真机与仿真器使用。
+LinkerHand灵巧手ROS SDK 是灵心巧手(北京)科技有限公司开发，用于O6、L6、L7、O7、L10、L20、L21等LinkerHand灵巧手的驱动软件和功能示例源码。可用于真机与仿真器使用。
 LinkerHandROS2 SDK当前支持Ubuntu22.04 ROS humble Python3.10 及以上环境
 
 
@@ -43,8 +43,8 @@ LinkerHandROS2 SDK当前支持Ubuntu22.04 ROS humble Python3.10 及以上环境
 
 &ensp;&ensp; __使用前请先将单手[linker_hand.launch.py](https://github.com/linker-bot/linkerhand-ros2-sdk/blob/main/linker_hand_ros2_sdk/launch/linker_hand.launch.py) or 双手[linker_hand_double.launch.py](https://github.com/linker-bot/linkerhand-ros2-sdk/blob/main/linker_hand_ros2_sdk/launch/linker_hand_double.launch.py)文件按照实际灵巧手参数进行配置.__
 
-- 启动SDK单手&ensp;&ensp;&ensp;&ensp;将linker_hand灵巧手的USB转CAN设备插入Ubuntu设备上  支持型号:O6/L6/L7/L10/L20/G20/L21/L25
-- 启动SDK双手&ensp;&ensp;&ensp;&ensp;先将左手linker_hand灵巧手的USB转CAN设备插入Ubuntu设备上，一般被识别为can0。再将右手linker_hand灵巧手的USB转CAN设备插入Ubuntu设备上，一般识别为can1.  支持型号:O6/L6/L7/L10/L20/G20/L21/L25
+- 启动SDK单手&ensp;&ensp;&ensp;&ensp;将linker_hand灵巧手的USB转CAN设备插入Ubuntu设备上  支持型号:O6/L6/L7/L10/L20/L20-10/L20-11/L21/L25
+- 启动SDK双手&ensp;&ensp;&ensp;&ensp;先将左手linker_hand灵巧手的USB转CAN设备插入Ubuntu设备上，一般被识别为can0。再将右手linker_hand灵巧手的USB转CAN设备插入Ubuntu设备上，一般识别为can1.  支持型号:O6/L6/L7/L10/L20/L20-10/L20-11/L21/L25
 ```bash
   # 开启CAN端口
   $ sudo /usr/sbin/ip link set can0 up type can bitrate 1000000 #USB转CAN设备蓝色灯常亮状态
@@ -61,7 +61,7 @@ LinkerHandROS2 SDK当前支持Ubuntu22.04 ROS humble Python3.10 及以上环境
   $ [linker_hand_sdk-1] 2025-06-24 17:21:14  left L10 set maximum torque to [200, 200, 200, 200, 200]
 ```
 
- - 启动L20 V10版(G20)全掌压感版方法
+ - 启动L20 V10 V11全掌压感版方法
  ```bash
   # 开启CAN端口
   $ sudo /usr/sbin/ip link set can0 up type can bitrate 1000000 #USB转CAN设备蓝色灯常亮状态
@@ -69,7 +69,7 @@ LinkerHandROS2 SDK当前支持Ubuntu22.04 ROS humble Python3.10 及以上环境
   $ colcon build --symlink-install
   $ source ./install/setup.bash
   # 参数说明 --hand_type 左右手  --can can端口编号  --is_touch 是否开启压感
-  $  ros2 run linker_hand_ros2_sdk linker_hand_g20_palm_touch --hand_type left --can can0 --is_touch true
+  $  ros2 run linker_hand_ros2_sdk linker_hand_l20_10_11_palm_touch --hand_type left --can can0 --is_touch true
  ```
 
 ## 使用 for WIN+ROS2
@@ -149,13 +149,16 @@ effort: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
   L20: ["拇指根部", "食指根部", "中指根部", "无名指根部","小指根部","拇指侧摆","食指侧摆","中指侧摆","无名指侧摆","小指侧摆","拇指横摆","预留","预留","预留","预留","拇指尖部","食指末端","中指末端","无名指末端","小指末端"]
 
-  G20(工业版): ["拇指根部", "食指根部", "中指根部", "无名指根部","小指根部","拇指侧摆","食指侧摆","中指侧摆","无名指侧摆","小指侧摆","拇指横摆","预留","预留","预留","预留","拇指尖部","食指末端","中指末端","无名指末端","小指末端"]
+  L20-10 & L20-11: ["拇指根部", "食指根部", "中指根部", "无名指根部","小指根部","拇指侧摆","食指侧摆","中指侧摆","无名指侧摆","小指侧摆","拇指横摆","预留","预留","预留","预留","拇指尖部","食指末端","中指末端","无名指末端","小指末端"]
 
   L21: ["大拇指根部","食指根部","中指根部","无名指根部","小拇指根部","大拇指侧摆","食指侧摆","中指侧摆","无名指侧摆","小拇指侧摆","大拇指横滚","预留","预留","预留","预留","大拇指中部","预留","预留","预留","预留","大拇指指尖","食指指尖","中指指尖","无名指指尖","小拇指指尖"]
 
   L25: ["大拇指根部", "食指根部", "中指根部","无名指根部","小拇指根部","大拇指侧摆","食指侧摆","中指侧摆","无名指侧摆","小拇指侧摆","大拇指横滚","预留","预留","预留","预留","大拇指中部","食指中部","中指中部","无名指中部","小拇指中部","大拇指指尖","食指指尖","中指指尖","无名指指尖","小拇指指尖"]
 
 ## 版本更新
+- > ### release_3.2.5
+ - 1、修改已知BUG，频率进行优化
+
 - > ### release_3.0.1
  - 1、支持O6/L6/L10 RS485通讯 pymodbus模式
  - 2、重构ROS2逻辑层，提升CAN通讯效率
@@ -266,7 +269,7 @@ $ ros2 launch gui_control gui_control.launch.py
 
 
 
-## 进阶用法 支持O6\L6\L7\G20
+## 进阶用法 支持O6\L6\L7\L20-10\L20-11
  - 如果仅需求控制、获取状态、获取压感信息。可以使用以下进阶用法。一般用于数据采集使用。
 ```bash
 #'/cb_{self.hand_type}_hand_control_cmd' 话题类型为 sensor_msgs/msg/JointState 控制话题，限制 30Hz
@@ -285,10 +288,10 @@ $ ros2 run linker_hand_ros2_sdk linker_hand_advanced_o6 --hand_type left --can c
 $ ros2 run linker_hand_ros2_sdk linker_hand_advanced_l6 --hand_type right --can can0 --is_touch false
 # L7 左手 带指尖压感
 $ ros2 run linker_hand_ros2_sdk linker_hand_advanced_l7 --hand_type left --can can0 --is_touch true
-# G20 左手 带指尖压感
-$ ros2 run linker_hand_ros2_sdk linker_hand_advanced_g20 --hand_type left --can can0 --is_touch true
+# L20-10 & L20-11 左手 带指尖压感
+$ ros2 run linker_hand_ros2_sdk linker_hand_advanced_l20_10_11 --hand_type left --can can0 --is_touch true
 ```
- - 进阶用法，双手控制 支持O6\L6\L7\G20
+ - 进阶用法，双手控制 
 新开终端1
 ```bash
 # 以O6为例

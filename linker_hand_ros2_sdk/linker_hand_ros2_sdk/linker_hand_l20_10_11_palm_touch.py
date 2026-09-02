@@ -249,7 +249,7 @@ def main(args=None):
     /cb_{self.hand_type}_hand_state 话题类型为 sensor_msgs/msg/JointState 30Hz
     '/cb_{self.hand_type}_hand_matrix_touch' 话题类型为 std_msgs/msg/String 30Hz
     启动命令:
-    ros2 run linker_hand_ros2_sdk linker_hand_g20_palm_touch --hand_type left --can can0 --is_touch true
+    ros2 run linker_hand_ros2_sdk linker_hand_l20_10_11_palm_touch --hand_type left --can can0 --is_touch true
     '''
     try:
         rclpy.init(args=args)
@@ -259,7 +259,7 @@ def main(args=None):
         parser.add_argument('--is_touch',   choices=['true','false'], required=True)
 
         args = parser.parse_args()
-        node = LinkerHandAdvancedG20(name="linker_hand_g20_palm_touch",hand_type=args.hand_type,can=args.can,is_touch=args.is_touch)
+        node = LinkerHandAdvancedG20(name="linker_hand_l20_10_11_palm_touch",hand_type=args.hand_type,can=args.can,is_touch=args.is_touch)
         rclpy.spin(node)         # 主循环，监听 ROS 回调
     except KeyboardInterrupt:
         print("收到 Ctrl+C，准备退出...")

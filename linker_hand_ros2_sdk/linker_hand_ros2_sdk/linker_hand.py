@@ -411,7 +411,7 @@ def main(args=None):
         rclpy.init(args=args)
         node = LinkerHand("linker_hand_sdk")
         embedded_version = node.embedded_version
-        if len(embedded_version) == 3 or node.hand_joint.upper() == "O6" or node.hand_joint.upper() == "L6" or node.hand_joint.upper() == "G20":
+        if len(embedded_version) == 3 or node.hand_joint.upper() == "O6" or node.hand_joint.upper() == "L6" or node.hand_joint.upper() == "G20"  or node.hand_joint.upper() == "L20-10" or node.hand_joint.upper() == "L20-11":
             ColorMsg(msg="New Matrix Touch For SDK V2", color="green")
             node.sdk_v = 2
         elif len(embedded_version) == 6 and node.hand_joint == "L10":

@@ -1,4 +1,4 @@
-VERSION: 3.2.3 # 支持G20 RS485通讯模式、支持L6、O6全掌传感器
+VERSION: 3.2.5 # 修改已知BUG，频率进行优化
 LINKER_HAND:  # 手部配置信息
   LEFT_HAND:
     EXISTS: True # 是否存在左手

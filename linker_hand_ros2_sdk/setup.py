@@ -25,7 +25,6 @@ data_files = [
 #         files_full_path = [os.path.relpath(os.path.join(root, f), start=os.getcwd()) for f in files]
 #         data_files.append((target_path, files_full_path))
         
-
 setup(
     name=package_name,
     version='0.0.0',
@@ -45,7 +44,9 @@ setup(
             'linker_hand_advanced_l7 = linker_hand_ros2_sdk.linker_hand_advanced_l7:main',
             'linker_hand_advanced_l10 = linker_hand_ros2_sdk.linker_hand_advanced_l10:main',
             'linker_hand_advanced_g20 = linker_hand_ros2_sdk.linker_hand_advanced_g20:main',
+            'linker_hand_advanced_l20_10_11 = linker_hand_ros2_sdk.linker_hand_advanced_l20_10_11:main',
             'linker_hand_g20_palm_touch = linker_hand_ros2_sdk.linker_hand_g20_palm_touch:main',
+            'linker_hand_l20_10_11_palm_touch = linker_hand_ros2_sdk.linker_hand_l20_10_11_palm_touch:main',
         ],
     },
 )
